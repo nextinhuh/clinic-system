@@ -7,8 +7,10 @@ export function App() {
     <div className="h-[100vh] flex items-stretch">
       <div className="bg-sign-page flex-1 bg-cover"></div>
 
-      <div className="flex flex-col items-center justify-center w-1/3 max-w-[700] p-6">
-        <form action="" className="w-96 flex flex-col gap-3">
+      <div className="flex flex-col items-center justify-center min-w-1/2 p-12">
+        <img src="/assets/clinic-logo.png" alt="" className="text-white w-52" />
+
+        <form action="" className="w-96 flex flex-col gap-3 mt-8">
           <Label>E-mail</Label>
           <Input type="email" id="email" placeholder="E-mail" />
 
