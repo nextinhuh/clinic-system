@@ -16,7 +16,7 @@ export function App() {
           <Input type="password" id="password" placeholder="Senha" />
 
           <Button className="mt-6" variant="outline">
-            Teste
+            Entrar
           </Button>
         </form>
       </div>
