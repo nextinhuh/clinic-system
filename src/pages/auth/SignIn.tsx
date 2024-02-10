@@ -1,8 +1,8 @@
 import { Label } from '@radix-ui/react-label'
-import { Button } from './components/ui/button'
-import { Input } from './components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
-export function App() {
+export function SignIn() {
   return (
     <div className="h-[100vh] flex items-stretch">
       <div className="bg-sign-page flex-1 bg-cover"></div>
