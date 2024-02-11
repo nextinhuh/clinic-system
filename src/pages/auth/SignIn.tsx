@@ -1,28 +1,57 @@
-import { Label } from '@radix-ui/react-label'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
+import { CreateUserFormData, GetUserData } from '@/utils/types'
+import { createUserFormSchema } from '@/utils/schemas'
+import { useToast } from '@/components/ui/use-toast'
+import { FIREBASE_ERROR } from '@/utils/firebase-errors'
 
 export function SignIn() {
   const auth = getAuth()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const { toast } = useToast()
+  const form = useForm<CreateUserFormData>({
+    resolver: zodResolver(createUserFormSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  })
 
-  async function handleSubmit(): Promise<void> {
-    await createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed up
+  async function handleRegisterUser(
+    userData: CreateUserFormData,
+  ): Promise<void> {
+    await createUserWithEmailAndPassword(
+      auth,
+      userData.email,
+      userData.password,
+    )
+      .then((userCredential: GetUserData) => {
         const user = userCredential.user
 
-        console.log(user)
-
-        // ...
+        console.log(user?.email)
+        console.log(user?.uid)
       })
       .catch((error) => {
-        console.log(error)
-
-        // ..
+        if (error.message === FIREBASE_ERROR.EMAIL_EXISTIS) {
+          toast({
+            variant: 'destructive',
+            title: 'Erro ao criar usuário',
+            duration: 3000, // 3 SECONDS
+            description:
+              'Já existe usuário com esse e-mail, favor tentar com outro diferente.',
+          })
+        }
       })
   }
 
@@ -33,29 +62,63 @@ export function SignIn() {
       <div className="flex flex-col items-center justify-center min-w-1/2 p-12">
         <img src="/assets/clinic-logo.png" alt="" className="text-white w-52" />
 
-        <form onSubmit={handleSubmit} className="w-96 flex flex-col gap-3 mt-8">
-          <Label>E-mail</Label>
-          <Input
-            type="email"
-            id="email"
-            placeholder="E-mail"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleRegisterUser)}
+            className="w-96 flex flex-col gap-3 mt-8"
+          >
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>E-mail</FormLabel>
+                  <FormControl>
+                    <Input placeholder="E-mail" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Label className="">Senha</Label>
-          <Input
-            type="password"
-            id="password"
-            placeholder="Senha"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Senha</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Senha" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Button className="mt-6" variant="outline" type="submit">
-            Entrar
-          </Button>
-        </form>
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirmação da senha</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Repita a senha" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button
+              className="mt-6"
+              variant="outline"
+              type="submit"
+              isLoading={form.formState.isSubmitting}
+            >
+              Entrar
+            </Button>
+          </form>
+        </Form>
       </div>
     </div>
   )
