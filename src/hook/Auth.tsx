@@ -1,3 +1,6 @@
+import { CreateUserFormData, GetUserData } from '@/utils/types'
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
+import { doc, getFirestore, setDoc } from 'firebase/firestore'
 import {
   createContext,
   useCallback,
@@ -6,28 +9,12 @@ import {
   ReactNode,
 } from 'react'
 
-interface SignInCredentials {
-  email: string
-  password: string
-}
-
-interface User {
-  id: string
-  name: string
-  avatar_url: string
-  email: string
-}
-
 interface AuthContextData {
-  user: User
-  signIn(crendentials: SignInCredentials): Promise<void>
+  user: GetUserData
+  registerNewUser(userData: CreateUserFormData): Promise<void>
+  signIn(crendentials: GetUserData): Promise<void>
   signOut(): void
-  updateUser(user: User): void
-}
-
-interface AuthState {
-  token: string
-  user: User
+  updateUser(user: GetUserData): void
 }
 
 interface AuthProviderProps {
@@ -37,7 +24,10 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [data, setData] = useState<AuthState>(() => {
+  const auth = getAuth()
+  const db = getFirestore()
+
+  const [data, setData] = useState<GetUserData>(() => {
     const token = localStorage.getItem('@ClincSystem:token')
     const user = localStorage.getItem('@ClincSystem:user')
 
@@ -47,8 +37,52 @@ export function AuthProvider({ children }: AuthProviderProps) {
       return { token, user: JSON.parse(user) }
     }
 
-    return {} as AuthState
+    return {} as GetUserData
   })
+
+  async function registerNewUser(userData: CreateUserFormData): Promise<void> {
+    /* const response = await api.post('sessions', {
+      email,
+      password,
+    })
+
+    const { token, user } = response.data
+
+    localStorage.setItem('@GoBarber:token', token)
+    localStorage.setItem('@GoBarber:user', JSON.stringify(user))
+
+    api.defaults.headers.authorization = `Bearer ${token}`
+
+    setData({ token, user }) */
+
+    const { user }: GetUserData = await createUserWithEmailAndPassword(
+      auth,
+      userData.email,
+      userData.password,
+    ).catch((error) => {
+      throw new Error(error.message)
+    })
+
+    /* await addDoc(collection(db, `users`), {
+      id: user.uid,
+      name: user.displayName,
+      photoURL: user.photoURL,
+      email: user.email,
+    }).catch((error) => {
+      throw new Error(error.message)
+    }) */
+
+    await setDoc(doc(db, 'users', String(user.uid)), {
+      id: user.uid,
+      name: user.displayName,
+      photoURL: user.photoURL,
+      email: user.email,
+    }).catch((error) => {
+      throw new Error(error.message)
+    })
+
+    localStorage.setItem('@ClinicSystem:user', JSON.stringify(user))
+  }
 
   const signIn = useCallback(async () => {
     /* const response = await api.post('sessions', {
@@ -67,27 +101,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [])
 
   const signOut = useCallback(() => {
-    localStorage.removeItem('@GoBarber:token')
-    localStorage.removeItem('@GoBarber:user')
+    localStorage.removeItem('@ClinicSystem:token')
+    localStorage.removeItem('@ClinicSystem:user')
 
-    setData({} as AuthState)
+    setData({} as GetUserData)
   }, [])
 
-  const updateUser = useCallback(
-    (user: User) => {
-      localStorage.setItem('@GoBarber:user', JSON.stringify(user))
-
-      setData({
-        token: data.token,
-        user,
-      })
-    },
-    [setData, data.token],
-  )
+  function updateUser(user: GetUserData) {
+    localStorage.setItem('@ClinicSystem:user', JSON.stringify(user))
+  }
 
   return (
     <AuthContext.Provider
-      value={{ user: data.user, signIn, signOut, updateUser }}
+      value={{ user: data, signIn, signOut, updateUser, registerNewUser }}
     >
       {children}
     </AuthContext.Provider>

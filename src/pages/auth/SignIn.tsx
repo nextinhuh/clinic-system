@@ -10,15 +10,15 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
-import { CreateUserFormData, GetUserData } from '@/utils/types'
+import { CreateUserFormData } from '@/utils/types'
 import { createUserFormSchema } from '@/utils/schemas'
 import { useToast } from '@/components/ui/use-toast'
 import { FIREBASE_ERROR } from '@/utils/firebase-errors'
+import { useAuth } from '@/hook/Auth'
 
 export function SignIn() {
-  const auth = getAuth()
   const { toast } = useToast()
+  const { registerNewUser } = useAuth()
   const form = useForm<CreateUserFormData>({
     resolver: zodResolver(createUserFormSchema),
     defaultValues: {
@@ -31,28 +31,21 @@ export function SignIn() {
   async function handleRegisterUser(
     userData: CreateUserFormData,
   ): Promise<void> {
-    await createUserWithEmailAndPassword(
-      auth,
-      userData.email,
-      userData.password,
-    )
-      .then((userCredential: GetUserData) => {
-        const user = userCredential.user
-
-        console.log(user?.email)
-        console.log(user?.uid)
-      })
-      .catch((error) => {
-        if (error.message === FIREBASE_ERROR.EMAIL_EXISTIS) {
-          toast({
-            variant: 'destructive',
-            title: 'Erro ao criar usuário',
-            duration: 3000, // 3 SECONDS
-            description:
-              'Já existe usuário com esse e-mail, favor tentar com outro diferente.',
-          })
-        }
-      })
+    try {
+      const test = await registerNewUser(userData)
+      console.log(test)
+    } catch (error) {
+      console.log(error)
+      if ((error as Error).message === FIREBASE_ERROR.EMAIL_EXISTIS) {
+        toast({
+          variant: 'destructive',
+          title: 'Erro ao criar usuário',
+          duration: 3000, // 3 SECONDS
+          description:
+            'Já existe usuário com esse e-mail, favor tentar com outro diferente.',
+        })
+      }
+    }
   }
 
   return (

@@ -8,14 +8,17 @@ import { routes } from './routes/index.tsx'
 import { initializeApp } from 'firebase/app'
 import { firebaseConfig } from './config/firebase.config.ts'
 import { Toaster } from './components/ui/toaster.tsx'
+import { AuthProvider } from './hook/Auth.tsx'
 
 initializeApp(firebaseConfig)
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider defaultTheme="dark">
-      <Toaster />
-      <RouterProvider router={routes} />
+      <AuthProvider>
+        <Toaster />
+        <RouterProvider router={routes} />
+      </AuthProvider>
     </ThemeProvider>
   </React.StrictMode>,
 )
