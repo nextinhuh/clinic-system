@@ -1,5 +1,10 @@
 import { z } from 'zod'
-import { createUserFormSchema, getUserSchema } from './schemas'
+import {
+  signUpUserFormSchema,
+  getUserSchema,
+  signInUserFormSchema,
+} from './schemas'
 
-export type CreateUserFormData = z.infer<typeof createUserFormSchema>
+export type SignUpUserFormData = z.infer<typeof signUpUserFormSchema>
+export type SignInUserFormData = z.infer<typeof signInUserFormSchema>
 export type GetUserData = z.infer<typeof getUserSchema>

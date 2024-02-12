@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const createUserFormSchema = z
+export const signUpUserFormSchema = z
   .object({
     email: z
       .string({ required_error: 'E-mail é obrigatório' })
@@ -16,6 +16,13 @@ export const createUserFormSchema = z
     message: 'As senhas não conhecidem',
     path: ['confirmPassword'],
   })
+
+export const signInUserFormSchema = z.object({
+  email: z
+    .string({ required_error: 'E-mail é obrigatório' })
+    .email('E-mail inválido'),
+  password: z.string({ required_error: 'Senha é obrigatório' }),
+})
 
 export const getUserSchema = z.object({
   user: z
