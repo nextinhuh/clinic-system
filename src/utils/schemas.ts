@@ -1,5 +1,14 @@
 import { z } from 'zod'
 
+export const userSchema = z
+  .object({
+    uid: z.string().nullable(),
+    email: z.string().nullable(),
+    displayName: z.string().nullable(),
+    photoURL: z.string().nullable(),
+  })
+  .nullable()
+
 export const signUpUserFormSchema = z
   .object({
     email: z

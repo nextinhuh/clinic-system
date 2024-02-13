@@ -1,32 +1,21 @@
-import {
-  Navigate,
-  useLocation,
-  Route as ReactDOMRoute,
-  RouteProps as ReactDOMRouteProps,
-} from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '@/hook/Auth'
 
-type RouteProps = {
-  isPrivate?: boolean
-  component: React.ComponentType
-} & ReactDOMRouteProps
-
-export function Route({ isPrivate = false, component: Component }: RouteProps) {
+export function PrivateRoutes() {
   const { user } = useAuth()
-  const location = useLocation()
 
-  return (
-    <ReactDOMRoute>
-      {isPrivate === !!user ? (
-        <Component />
-      ) : (
-        <Navigate
-          to={{
-            pathname: isPrivate ? '/' : '/dashboard',
-          }}
-          state={{ from: location }}
-        />
-      )}
-    </ReactDOMRoute>
-  )
+  if (user && Object.keys(user).length === 0) {
+    return (
+      <Navigate
+        to="/signin"
+        replace
+        state={{
+          error:
+            'No authentication cookie was found, please complete the login process.',
+        }}
+      />
+    )
+  }
+
+  return <Outlet />
 }

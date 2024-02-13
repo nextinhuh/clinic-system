@@ -15,10 +15,12 @@ import { useAuth } from '@/hook/Auth'
 import { FIREBASE_ERROR } from '@/utils/firebase-errors'
 import { Input } from '../../../components/ui/input'
 import { Button } from '../../../components/ui/button'
+import { useNavigate } from 'react-router-dom'
 
 export function SingInCard() {
   const { toast } = useToast()
   const { signIn } = useAuth()
+  const navigate = useNavigate()
   const form = useForm<SignInUserFormData>({
     resolver: zodResolver(signInUserFormSchema),
     defaultValues: {
@@ -30,6 +32,7 @@ export function SingInCard() {
   async function handleSignInUser(userData: SignInUserFormData): Promise<void> {
     try {
       await signIn(userData)
+      navigate('/')
     } catch (error) {
       if ((error as Error).message === FIREBASE_ERROR.INVALID_CREDENTIAL) {
         toast({

@@ -1,9 +1,10 @@
-import { getUserSchema } from '@/utils/schemas'
+import { userSchema } from '@/utils/schemas'
 import {
   SignUpUserFormData,
   GetUserData,
   SignInUserFormData,
   UpdateInUserFormData,
+  UserData,
 } from '@/utils/types'
 import {
   getAuth,
@@ -16,7 +17,7 @@ import { doc, getFirestore, setDoc } from 'firebase/firestore'
 import { createContext, useState, useContext, ReactNode } from 'react'
 
 interface AuthContextData {
-  user: GetUserData
+  user: UserData
   signUp(userData: SignUpUserFormData): Promise<void>
   signIn(crendentials: SignInUserFormData): Promise<void>
   signOut(): void
@@ -32,14 +33,14 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 export function AuthProvider({ children }: AuthProviderProps) {
   const auth = getAuth()
   const db = getFirestore()
-  const [data, setData] = useState<GetUserData>(() => {
-    const user = localStorage.getItem('@ClincSystem:user')
+  const [data, setData] = useState<UserData>(() => {
+    const user = localStorage.getItem('@ClinicSystem:user')
 
     if (user) {
-      return { user: JSON.parse(user) }
+      return JSON.parse(user)
     }
 
-    return {} as GetUserData
+    return {} as UserData
   })
 
   async function signUp(userData: SignUpUserFormData): Promise<void> {
@@ -64,7 +65,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function signIn(userData: SignInUserFormData): Promise<void> {
     await signInWithEmailAndPassword(auth, userData.email, userData.password)
       .then((userCredential) => {
-        const userData = getUserSchema.parse(userCredential)
+        const userData = userSchema.parse(userCredential.user)
         setData(userData)
         localStorage.setItem('@ClinicSystem:user', JSON.stringify(userData))
       })
@@ -77,7 +78,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     signOutFirebase(auth)
       .then(() => {
         localStorage.removeItem('@ClinicSystem:user')
-        setData({} as GetUserData)
+        setData({} as UserData)
       })
       .catch((error) => {
         throw new Error(error.message)

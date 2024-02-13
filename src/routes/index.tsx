@@ -1,26 +1,25 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { Home } from '@/pages/home/Home'
 import { AuthPage } from '@/pages/auth'
-
-/*
-export function Routes() {
-  return (
-    <BrowserRouter basename="/">
-      <RoutesDOM>
-        <Route path="/" component={SignIn} />
-      </RoutesDOM>
-    </BrowserRouter>
-  )
-}
-*/
+import { PrivateRoutes } from './Route'
 
 export const routes = createBrowserRouter([
   {
     path: '/',
+    element: <PrivateRoutes />,
+    children: [
+      {
+        path: '',
+        element: <Home />,
+      },
+    ],
+  },
+  {
+    path: '/signin',
     element: <AuthPage />,
   },
   {
-    path: 'home',
-    element: <Home />,
+    path: '*',
+    element: <p>404 - Page not found</p>,
   },
 ])
