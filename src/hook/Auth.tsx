@@ -1,28 +1,26 @@
+import { getUserSchema } from '@/utils/schemas'
 import {
   SignUpUserFormData,
   GetUserData,
   SignInUserFormData,
+  UpdateInUserFormData,
 } from '@/utils/types'
 import {
-  createUserWithEmailAndPassword,
   getAuth,
+  signOut as signOutFirebase,
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
 } from 'firebase/auth'
 import { doc, getFirestore, setDoc } from 'firebase/firestore'
-import {
-  createContext,
-  useCallback,
-  useState,
-  useContext,
-  ReactNode,
-} from 'react'
+import { createContext, useState, useContext, ReactNode } from 'react'
 
 interface AuthContextData {
   user: GetUserData
   signUp(userData: SignUpUserFormData): Promise<void>
   signIn(crendentials: SignInUserFormData): Promise<void>
   signOut(): void
-  updateUser(user: GetUserData): void
+  updateUser(user: UpdateInUserFormData): void
 }
 
 interface AuthProviderProps {
@@ -34,15 +32,11 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 export function AuthProvider({ children }: AuthProviderProps) {
   const auth = getAuth()
   const db = getFirestore()
-
   const [data, setData] = useState<GetUserData>(() => {
-    const token = localStorage.getItem('@ClincSystem:token')
     const user = localStorage.getItem('@ClincSystem:user')
 
-    if (token && user) {
-      // api.defaults.headers.authorization = `Bearer ${token}`
-
-      return { token, user: JSON.parse(user) }
+    if (user) {
+      return { user: JSON.parse(user) }
     }
 
     return {} as GetUserData
@@ -65,30 +59,56 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }).catch((error) => {
       throw new Error(error.message)
     })
-
-    localStorage.setItem('@ClinicSystem:user', JSON.stringify(user))
   }
 
   async function signIn(userData: SignInUserFormData): Promise<void> {
     await signInWithEmailAndPassword(auth, userData.email, userData.password)
       .then((userCredential) => {
-        setData(userCredential)
-        console.log(userCredential)
+        const userData = getUserSchema.parse(userCredential)
+        setData(userData)
+        localStorage.setItem('@ClinicSystem:user', JSON.stringify(userData))
       })
       .catch((error) => {
         throw new Error(error.message)
       })
   }
 
-  const signOut = useCallback(() => {
-    localStorage.removeItem('@ClinicSystem:token')
-    localStorage.removeItem('@ClinicSystem:user')
+  async function signOut() {
+    signOutFirebase(auth)
+      .then(() => {
+        localStorage.removeItem('@ClinicSystem:user')
+        setData({} as GetUserData)
+      })
+      .catch((error) => {
+        throw new Error(error.message)
+      })
+  }
 
-    setData({} as GetUserData)
-  }, [])
-
-  function updateUser(user: GetUserData) {
-    localStorage.setItem('@ClinicSystem:user', JSON.stringify(user))
+  function updateUser(userUpdated: UpdateInUserFormData) {
+    if (auth.currentUser) {
+      updateProfile(auth.currentUser, {
+        displayName: userUpdated.name,
+        photoURL: userUpdated.photoURL,
+      })
+        .then(async () => {
+          await setDoc(doc(db, 'users', String(auth.currentUser?.uid)), {
+            name: userUpdated.name,
+            photoURL: userUpdated.photoURL,
+          })
+            .then(() => {
+              localStorage.setItem(
+                '@ClinicSystem:user',
+                JSON.stringify(userUpdated),
+              )
+            })
+            .catch((error) => {
+              throw new Error(error.message)
+            })
+        })
+        .catch((error) => {
+          throw new Error(error.message)
+        })
+    }
   }
 
   return (

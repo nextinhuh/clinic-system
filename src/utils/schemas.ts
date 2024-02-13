@@ -24,6 +24,11 @@ export const signInUserFormSchema = z.object({
   password: z.string({ required_error: 'Senha é obrigatório' }),
 })
 
+export const updateUserFormSchema = z.object({
+  name: z.string({ required_error: 'Nome é obrigatório' }),
+  photoURL: z.string().nullable(),
+})
+
 export const getUserSchema = z.object({
   user: z
     .object({
