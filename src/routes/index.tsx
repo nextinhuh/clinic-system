@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
-import { Home } from '@/pages/home/Home'
 import { AuthPage } from '@/pages/auth'
 import { PrivateRoutes } from './Route'
+import { Home } from '@/pages/home'
 
 export const routes = createBrowserRouter([
   {

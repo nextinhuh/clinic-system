@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '@/hook/Auth'
+import { AppLayout } from '@/components/AppLayout'
 
 export function PrivateRoutes() {
   const { user } = useAuth()
@@ -17,5 +18,9 @@ export function PrivateRoutes() {
     )
   }
 
-  return <Outlet />
+  return (
+    <AppLayout>
+      <Outlet />
+    </AppLayout>
+  )
 }
