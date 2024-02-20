@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { TopBar } from './topbar'
+import { TopBar } from './TopBar'
 
 type AppLayoutProps = {
   children: ReactNode

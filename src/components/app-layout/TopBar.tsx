@@ -1,4 +1,4 @@
-import { NavMenu } from '../nav-menu'
+import { NavMenu } from '../app-layout/NavMenu'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 export function TopBar() {
