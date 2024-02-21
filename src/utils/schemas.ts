@@ -2,9 +2,9 @@ import { z } from 'zod'
 
 export const userSchema = z
   .object({
-    uid: z.string().nullable(),
+    id: z.string().nullable(),
     email: z.string().nullable(),
-    displayName: z.string().nullable(),
+    name: z.string().nullable(),
     photoURL: z.string().nullable(),
   })
   .nullable()
@@ -38,7 +38,7 @@ export const updateUserFormSchema = z.object({
   photoURL: z.string().nullable(),
 })
 
-export const getUserSchema = z.object({
+export const getFirebaseUserSchema = z.object({
   user: z
     .object({
       uid: z.string().nullable(),

@@ -1,10 +1,10 @@
 import { userSchema } from '@/utils/schemas'
 import {
   SignUpUserFormData,
-  GetUserData,
   SignInUserFormData,
   UpdateInUserFormData,
   UserData,
+  GetFirebaseUserData,
 } from '@/utils/types'
 import {
   getAuth,
@@ -13,7 +13,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
 } from 'firebase/auth'
-import { doc, getFirestore, setDoc } from 'firebase/firestore'
+import { doc, getFirestore, setDoc, getDoc } from 'firebase/firestore'
 import { createContext, useState, useContext, ReactNode } from 'react'
 
 interface AuthContextData {
@@ -44,7 +44,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   })
 
   async function signUp(userData: SignUpUserFormData): Promise<void> {
-    const { user }: GetUserData = await createUserWithEmailAndPassword(
+    const { user }: GetFirebaseUserData = await createUserWithEmailAndPassword(
       auth,
       userData.email,
       userData.password,
@@ -64,9 +64,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function signIn(userData: SignInUserFormData): Promise<void> {
     await signInWithEmailAndPassword(auth, userData.email, userData.password)
-      .then((userCredential) => {
-        const userData = userSchema.parse(userCredential.user)
+      .then(async (userCredential) => {
+        const docRef = doc(db, 'users', userCredential.user.uid)
+        const userFirestore = await getDoc(docRef)
+        const userData = userSchema.parse(userFirestore.data())
         setData(userData)
+
         localStorage.setItem('@ClinicSystem:user', JSON.stringify(userData))
       })
       .catch((error) => {

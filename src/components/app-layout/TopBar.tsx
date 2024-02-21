@@ -4,8 +4,11 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Separator } from '../ui/separator'
 import { IoMdSettings } from 'react-icons/io'
 import { CgProfile, CgLogOut } from 'react-icons/cg'
+import { useAuth } from '@/hook/Auth'
 
 export function TopBar() {
+  const { user, signOut } = useAuth()
+
   return (
     <header className="flex items-center justify-between w-[100%] border-b-[1px] border-white mt-4 pb-5">
       <div className="flex gap-10">
@@ -22,10 +25,8 @@ export function TopBar() {
             </Avatar>
           </PopoverTrigger>
           <PopoverContent>
-            <p className="text-base font-bold">Álvaro Neto</p>
-            <p className="text-xs font-bold text-gray-400">
-              alvaro_neto96@hotmail.com
-            </p>
+            <p className="text-base font-bold">{user?.name}</p>
+            <p className="text-xs font-bold text-gray-400">{user?.email}</p>
 
             <Separator className="my-4" />
 
@@ -41,7 +42,10 @@ export function TopBar() {
 
             <Separator className="my-4" />
 
-            <div className="flex items-center gap-2 cursor-pointer text-slate-500 hover:text-white w-16">
+            <div
+              className="flex items-center gap-2 cursor-pointer text-slate-500 hover:text-white w-16"
+              onClick={signOut}
+            >
               <CgLogOut size={24} />
               <p>Sair</p>
             </div>
