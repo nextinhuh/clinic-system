@@ -2,9 +2,9 @@ import { userSchema } from '@/utils/schemas'
 import {
   SignUpUserFormData,
   SignInUserFormData,
-  UpdateInUserFormData,
   UserData,
   GetFirebaseUserData,
+  UpdateUserFormData,
 } from '@/utils/types'
 import {
   getAuth,
@@ -21,7 +21,7 @@ interface AuthContextData {
   signUp(userData: SignUpUserFormData): Promise<void>
   signIn(crendentials: SignInUserFormData): Promise<void>
   signOut(): void
-  updateUser(user: UpdateInUserFormData): void
+  updateUser(user: UpdateUserFormData): Promise<void>
 }
 
 interface AuthProviderProps {
@@ -88,22 +88,32 @@ export function AuthProvider({ children }: AuthProviderProps) {
       })
   }
 
-  function updateUser(userUpdated: UpdateInUserFormData) {
+  async function updateUser(userUpdated: UpdateUserFormData): Promise<void> {
     if (auth.currentUser) {
-      updateProfile(auth.currentUser, {
+      await updateProfile(auth.currentUser, {
         displayName: userUpdated.name,
         photoURL: userUpdated.photoURL,
       })
         .then(async () => {
-          await setDoc(doc(db, 'users', String(auth.currentUser?.uid)), {
-            name: userUpdated.name,
-            photoURL: userUpdated.photoURL,
-          })
+          await setDoc(
+            doc(db, 'users', String(auth.currentUser?.uid)),
+            {
+              name: userUpdated.name,
+              photoURL: userUpdated.photoURL,
+            },
+            { merge: true },
+          )
             .then(() => {
               localStorage.setItem(
                 '@ClinicSystem:user',
                 JSON.stringify(userUpdated),
               )
+              setData({
+                id: String(auth.currentUser?.uid),
+                name: userUpdated.name,
+                email: userUpdated.email,
+                photoURL: String(userUpdated.photoURL),
+              })
             })
             .catch((error) => {
               throw new Error(error.message)

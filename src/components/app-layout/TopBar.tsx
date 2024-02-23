@@ -5,8 +5,13 @@ import { Separator } from '../ui/separator'
 import { IoMdSettings } from 'react-icons/io'
 import { CgProfile, CgLogOut } from 'react-icons/cg'
 import { useAuth } from '@/hook/Auth'
+import { getUserNameFallback } from '@/utils/parse'
 
-export function TopBar() {
+interface TopBarProps {
+  openUpdateProfileDialog: () => void
+}
+
+export function TopBar({ openUpdateProfileDialog }: TopBarProps) {
   const { user, signOut } = useAuth()
 
   return (
@@ -20,8 +25,13 @@ export function TopBar() {
         <Popover>
           <PopoverTrigger asChild>
             <Avatar className="cursor-pointer">
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>AN</AvatarFallback>
+              <AvatarImage
+                src={user?.photoURL ? user?.photoURL : ''}
+                alt="@shadcn"
+              />
+              <AvatarFallback>
+                {getUserNameFallback(String(user?.name))}
+              </AvatarFallback>
             </Avatar>
           </PopoverTrigger>
           <PopoverContent>
@@ -30,7 +40,10 @@ export function TopBar() {
 
             <Separator className="my-4" />
 
-            <div className="flex items-center gap-2 cursor-pointer text-slate-500 hover:text-white w-16">
+            <div
+              className="flex items-center gap-2 cursor-pointer text-slate-500 hover:text-white w-16"
+              onClick={openUpdateProfileDialog}
+            >
               <CgProfile size={20} />
               <p>Perfil</p>
             </div>

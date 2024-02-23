@@ -10,5 +10,5 @@ import {
 export type UserData = z.infer<typeof userSchema>
 export type SignUpUserFormData = z.infer<typeof signUpUserFormSchema>
 export type SignInUserFormData = z.infer<typeof signInUserFormSchema>
-export type UpdateInUserFormData = z.infer<typeof updateUserFormSchema>
+export type UpdateUserFormData = z.infer<typeof updateUserFormSchema>
 export type GetFirebaseUserData = z.infer<typeof getFirebaseUserSchema>

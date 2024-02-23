@@ -34,8 +34,20 @@ export const signInUserFormSchema = z.object({
 })
 
 export const updateUserFormSchema = z.object({
-  name: z.string({ required_error: 'Nome é obrigatório' }),
-  photoURL: z.string().nullable(),
+  email: z.string(),
+  name: z
+    .string({ required_error: 'Nome é obrigatório' })
+    .refine((data) => data.trim() !== '', {
+      message: 'O campo nome não pode ser vazio',
+    })
+    .refine((data) => data.length >= 3, {
+      message: 'O campo nome deve conter mais de 3 caracteres',
+    }),
+  photoURL: z
+    .string()
+    .url({ message: 'Porfavor coloque uma URL válida' })
+    .optional()
+    .or(z.literal('')),
 })
 
 export const getFirebaseUserSchema = z.object({
