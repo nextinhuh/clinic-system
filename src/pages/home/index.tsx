@@ -82,15 +82,15 @@ export function Home() {
 
       <CardContainer />
 
-      <div className="flex justify-between gap-4 mt-10">
-        <div className="border rounded-lg p-4">
+      <div className="flex flex-col justify-between gap-4 mt-10 xl:flex-row">
+        <div className="border w-[100%] rounded-lg p-4">
           <h1 className="font-bold">Consultas no mês</h1>
           <Chart
             options={options}
             series={series}
             type="area"
             height={300}
-            width={700}
+            width="100%"
           />
         </div>
 

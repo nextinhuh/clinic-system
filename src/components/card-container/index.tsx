@@ -6,7 +6,7 @@ import { GiExitDoor } from 'react-icons/gi'
 
 export function CardContainer() {
   return (
-    <div className="grid grid-cols-4 gap-4 mt-8">
+    <div className="grid gap-4 mt-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
       <Card className="max-h-36">
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-base">
