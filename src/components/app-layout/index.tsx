@@ -5,6 +5,7 @@ import {
   UpdateProfileDialogRef,
 } from '../update-profile-dialog'
 import { useAuth } from '@/hook/Auth'
+import { SheetNavMenu, SheetNavMenuRef } from './SheetNavMenu'
 
 type AppLayoutProps = {
   children: ReactNode
@@ -13,6 +14,7 @@ type AppLayoutProps = {
 export function AppLayout({ children }: AppLayoutProps) {
   const { user } = useAuth()
   const updateProfileDialogRef = useRef<UpdateProfileDialogRef>(null)
+  const sheetNavMenuRef = useRef<SheetNavMenuRef>(null)
 
   useEffect(() => {
     if (user?.name === '' || user?.name == null) {
@@ -23,10 +25,12 @@ export function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className="container">
       <TopBar
+        openSheetNavMenu={() => sheetNavMenuRef.current?.handleOpenSheetMenu()}
         openUpdateProfileDialog={() =>
           updateProfileDialogRef.current?.handleOpenDialog()
         }
       />
+      <SheetNavMenu ref={sheetNavMenuRef} />
       <UpdateProfileDialog ref={updateProfileDialogRef} />
       {children}
     </div>

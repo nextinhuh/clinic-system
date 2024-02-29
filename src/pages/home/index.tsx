@@ -77,7 +77,9 @@ export function Home() {
     <div className="p-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Início</h1>
-        <p className="text-xs">Atualizado em: {getActualDate()}</p>
+        <p className="text-[10px] mt-2 sm:text-xs sm:mt-0">
+          Atualizado em: {getActualDate()}
+        </p>
       </div>
 
       <CardContainer />
