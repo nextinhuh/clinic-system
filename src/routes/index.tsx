@@ -2,6 +2,8 @@ import { createBrowserRouter } from 'react-router-dom'
 import { AuthPage } from '@/pages/auth'
 import { PrivateRoutes } from './Route'
 import { Home } from '@/pages/home'
+import { Patient } from '@/pages/patient'
+import { Appointment } from '@/pages/appointment'
 
 export const routes = createBrowserRouter([
   {
@@ -11,6 +13,14 @@ export const routes = createBrowserRouter([
       {
         path: '',
         element: <Home />,
+      },
+      {
+        path: 'patient',
+        element: <Patient />,
+      },
+      {
+        path: 'appointment',
+        element: <Appointment />,
       },
     ],
   },

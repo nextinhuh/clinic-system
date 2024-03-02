@@ -1,6 +1,7 @@
-import { forwardRef, useImperativeHandle, useState } from 'react'
+import { forwardRef, useImperativeHandle, useMemo, useState } from 'react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet'
 import { NavMenu } from './NavMenu'
+import { useLocation } from 'react-router-dom'
 
 export interface SheetNavMenuRef {
   handleOpenSheetMenu: () => void
@@ -10,6 +11,11 @@ export interface SheetNavMenuRef {
 // eslint-disable-next-line react/display-name
 export const SheetNavMenu = forwardRef<SheetNavMenuRef>((_, ref) => {
   const [open, setOpen] = useState(false)
+  const location = useLocation()
+
+  useMemo(() => {
+    setOpen(false)
+  }, [location])
 
   useImperativeHandle(ref, () => ({
     handleOpenSheetMenu(): void {
@@ -24,7 +30,7 @@ export const SheetNavMenu = forwardRef<SheetNavMenuRef>((_, ref) => {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent side="left">
         <SheetHeader>
-          <SheetTitle>Páginas</SheetTitle>
+          <SheetTitle>Menu</SheetTitle>
         </SheetHeader>
 
         <NavMenu />

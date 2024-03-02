@@ -13,7 +13,7 @@ export function TopBar({
 }: TopBarProps) {
   return (
     <header className="flex items-center justify-between w-[100%] border-b-[1px] border-white mt-4 pb-5">
-      <div className="flex w-[100%] sm:w-[30rem] items-center sm:gap-10">
+      <div className="flex w-[100%] sm:w-[30rem] sm:gap-10">
         <IoMdMenu
           size={24}
           onClick={openSheetNavMenu}
@@ -24,7 +24,9 @@ export function TopBar({
           Clinic System
         </h1>
 
-        <NavMenu />
+        <div className="hidden sm:flex">
+          <NavMenu />
+        </div>
       </div>
 
       <AvatarProfile openUpdateProfileDialog={openUpdateProfileDialog} />
