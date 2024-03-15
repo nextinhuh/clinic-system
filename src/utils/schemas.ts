@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+// USER
+
 export const userSchema = z
   .object({
     id: z.string().nullable(),
@@ -57,6 +59,30 @@ export const getFirebaseUserSchema = z.object({
       email: z.string().nullable(),
       displayName: z.string().nullable(),
       photoURL: z.string().nullable(),
+    })
+    .nullable(),
+})
+
+// PACIENT
+
+export const patientSchema = z.object({
+  pacient: z
+    .object({
+      id: z.string().nullable(),
+      age: z.string().nullable(),
+      name: z.string().nullable(),
+      email: z.string().nullable(),
+      anamnesisId: z.string().nullable(),
+    })
+    .nullable(),
+})
+
+export const createpatientSchema = z.object({
+  pacient: z
+    .object({
+      age: z.string().nullable(),
+      name: z.string().nullable(),
+      email: z.string().nullable(),
     })
     .nullable(),
 })

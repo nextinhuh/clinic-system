@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SingInCard } from './components/SignInCard'
-import { SingUpCard } from './components/SingUpCard'
 import { useState } from 'react'
+import { SignUpCard } from './components/SignUpCard'
 
 export function AuthPage() {
   const [tabValue, setTabValue] = useState<string>('signIn')
@@ -42,7 +42,7 @@ export function AuthPage() {
           <TabsContent value="signUp">
             <div className="mt-8">
               <h1 className="text-center text-lg font-bold">Cadastre-se</h1>
-              <SingUpCard onSignUp={handleChangeTabValue} />
+              <SignUpCard onSignUp={handleChangeTabValue} />
             </div>
           </TabsContent>
         </Tabs>

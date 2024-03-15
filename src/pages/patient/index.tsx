@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -7,8 +8,15 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { getActualDate } from '@/utils/parse'
+import { useNavigate } from 'react-router-dom'
 
 export function Patient() {
+  const navigate = useNavigate()
+
+  function handleCreatePatient() {
+    navigate('/patient/create')
+  }
+
   return (
     <div className="p-8">
       <div className="flex items-center justify-between">
@@ -19,7 +27,13 @@ export function Patient() {
       </div>
 
       <div className="w-[100%] border rounded-lg p-8 mt-8">
-        <h1 className="font-bold mb-4">Lista das últimas consultas</h1>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="font-bold mb-4">Lista das últimas consultas</h1>
+          <Button onClick={handleCreatePatient} variant="outline">
+            Adicionar paciente
+          </Button>
+        </div>
+
         <Table>
           <TableHeader>
             <TableRow>

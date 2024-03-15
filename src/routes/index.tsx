@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { AuthPage } from '@/pages/auth'
-import { PrivateRoutes } from './Route'
+import { PrivateRoutes } from './PrivateRoutes'
 import { Home } from '@/pages/home'
-import { Patient } from '@/pages/patient'
 import { Appointment } from '@/pages/appointment'
+import { PatientRoutes } from './patient.routes'
 
 export const routes = createBrowserRouter([
   {
@@ -15,13 +15,10 @@ export const routes = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: 'patient',
-        element: <Patient />,
-      },
-      {
         path: 'appointment',
         element: <Appointment />,
       },
+      ...PatientRoutes,
     ],
   },
   {

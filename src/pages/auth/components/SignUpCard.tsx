@@ -20,7 +20,7 @@ interface SignUpCardProps {
   onSignUp: (newTabValue: string) => void
 }
 
-export function SingUpCard({ onSignUp }: SignUpCardProps) {
+export function SignUpCard({ onSignUp }: SignUpCardProps) {
   const { toast } = useToast()
   const { signUp } = useAuth()
   const form = useForm<SignUpUserFormData>({
