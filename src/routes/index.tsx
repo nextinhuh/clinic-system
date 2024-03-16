@@ -22,7 +22,7 @@ export const routes = createBrowserRouter([
     ],
   },
   {
-    path: '/signin',
+    path: '/sign-in',
     element: <AuthPage />,
   },
   {

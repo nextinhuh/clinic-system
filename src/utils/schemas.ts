@@ -66,23 +66,27 @@ export const getFirebaseUserSchema = z.object({
 // PACIENT
 
 export const patientSchema = z.object({
-  pacient: z
-    .object({
-      id: z.string().nullable(),
-      age: z.string().nullable(),
-      name: z.string().nullable(),
-      email: z.string().nullable(),
-      anamnesisId: z.string().nullable(),
-    })
-    .nullable(),
+  id: z.string().nullable(),
+  age: z.number().nullable(),
+  name: z.string().nullable(),
+  email: z.string().nullable(),
+  anamnesisId: z.string().nullable(),
 })
 
-export const createpatientSchema = z.object({
-  pacient: z
-    .object({
-      age: z.string().nullable(),
-      name: z.string().nullable(),
-      email: z.string().nullable(),
+export const createpatientFormSchema = z.object({
+  age: z.coerce
+    .number({ required_error: 'Idade é obrigatório' })
+    .max(100, 'Idade inválida')
+    .gte(-1, { message: 'Idade é obrigatório' }),
+  name: z
+    .string({ required_error: 'Nome é obrigatório' })
+    .refine((data) => data.trim() !== '', {
+      message: 'O campo nome não pode ser vazio',
     })
-    .nullable(),
+    .refine((data) => data.length >= 3, {
+      message: 'O campo nome deve conter mais de 3 caracteres',
+    }),
+  email: z
+    .string({ required_error: 'E-mail é obrigatório' })
+    .email({ message: 'E-mail inválido' }),
 })

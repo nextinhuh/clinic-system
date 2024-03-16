@@ -1,20 +1,12 @@
 import { useForm } from 'react-hook-form'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../../../components/ui/form'
 import { SignUpUserFormData } from '@/utils/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signUpUserFormSchema } from '@/utils/schemas'
 import { useToast } from '../../../components/ui/use-toast'
 import { useAuth } from '@/hook/Auth'
 import { FIREBASE_ERROR } from '@/utils/firebase-errors'
-import { Input } from '../../../components/ui/input'
 import { Button } from '../../../components/ui/button'
+import { FormController } from '@/components/form-controller'
 
 interface SignUpCardProps {
   onSignUp: (newTabValue: string) => void
@@ -31,6 +23,25 @@ export function SignUpCard({ onSignUp }: SignUpCardProps) {
       confirmPassword: '',
     },
   })
+  const inputList = [
+    {
+      name: 'email',
+      label: 'E-mail',
+      placeholder: 'E-mail',
+    },
+    {
+      name: 'password',
+      label: 'Senha',
+      placeholder: 'Senha',
+      type: 'password',
+    },
+    {
+      name: 'confirmPassword',
+      label: 'Confirmação da senha',
+      placeholder: 'Confirmação da senha',
+      type: 'password',
+    },
+  ]
 
   async function handleRegisterUser(
     userData: SignUpUserFormData,
@@ -59,66 +70,20 @@ export function SignUpCard({ onSignUp }: SignUpCardProps) {
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleRegisterUser)}
-        className="w-96 flex flex-col gap-3 mt-8"
+    <FormController
+      form={form}
+      inputList={inputList}
+      className="w-96 flex flex-col gap-3 mt-8"
+      onSubmit={form.handleSubmit(handleRegisterUser)}
+    >
+      <Button
+        className="mt-6"
+        variant="outline"
+        type="submit"
+        isLoading={form.formState.isSubmitting}
       >
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>E-mail</FormLabel>
-              <FormControl>
-                <Input placeholder="E-mail" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Senha</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="Senha" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirmação da senha</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  placeholder="Repita a senha"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button
-          className="mt-6"
-          variant="outline"
-          type="submit"
-          isLoading={form.formState.isSubmitting}
-        >
-          Cadastrar
-        </Button>
-      </form>
-    </Form>
+        Cadastrar
+      </Button>
+    </FormController>
   )
 }

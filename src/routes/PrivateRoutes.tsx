@@ -8,7 +8,7 @@ export function PrivateRoutes() {
   if (user && Object.keys(user).length === 0) {
     return (
       <Navigate
-        to="/signin"
+        to="/sign-in"
         replace
         state={{
           error:

@@ -6,7 +6,7 @@ import {
   updateUserFormSchema,
   getFirebaseUserSchema,
   patientSchema,
-  createpatientSchema,
+  createpatientFormSchema,
 } from './schemas'
 
 export type UserData = z.infer<typeof userSchema>
@@ -15,4 +15,4 @@ export type SignInUserFormData = z.infer<typeof signInUserFormSchema>
 export type UpdateUserFormData = z.infer<typeof updateUserFormSchema>
 export type GetFirebaseUserData = z.infer<typeof getFirebaseUserSchema>
 export type PatientData = z.infer<typeof patientSchema>
-export type CreatePatientData = z.infer<typeof createpatientSchema>
+export type CreatePatientFormData = z.infer<typeof createpatientFormSchema>

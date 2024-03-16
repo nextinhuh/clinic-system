@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -7,15 +8,25 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { allPatient } from '@/service/patient.service'
 import { getActualDate } from '@/utils/parse'
+import { PatientData } from '@/utils/types'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { IoCloseCircleOutline, IoCheckmarkCircleOutline } from 'react-icons/io5'
+import { BsLayoutTextWindow } from 'react-icons/bs'
 
 export function Patient() {
   const navigate = useNavigate()
+  const [patientList, setPatientList] = useState<PatientData[]>([])
 
   function handleCreatePatient() {
     navigate('/patient/create')
   }
+
+  useMemo(async () => {
+    setPatientList(await allPatient())
+  }, [])
 
   return (
     <div className="p-8">
@@ -34,24 +45,49 @@ export function Patient() {
           </Button>
         </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Data da consulta</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Qtd. retorno</TableHead>
-              <TableHead className="text-right">Valor</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">20/02/2024</TableCell>
-              <TableCell>Aguardando retorno</TableCell>
-              <TableCell>2</TableCell>
-              <TableCell className="text-right">R$ 250,00</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+        {patientList.length !== 0 && (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nome</TableHead>
+                <TableHead>Idade</TableHead>
+                <TableHead>E-mail</TableHead>
+                <TableHead>Anamnese</TableHead>
+                <TableHead>Detalhes</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {patientList.map((patient) => {
+                return (
+                  <TableRow key={patient.id}>
+                    <TableCell className="font-medium">
+                      {patient.name}
+                    </TableCell>
+                    <TableCell>{patient.age}</TableCell>
+                    <TableCell>{patient.email}</TableCell>
+                    <TableCell>
+                      {patient.anamnesisId === '' ? (
+                        <Badge className="w-11 rounded-3xl" variant="default">
+                          <IoCloseCircleOutline size={24} color="red" />
+                        </Badge>
+                      ) : (
+                        <Badge className="w-11 rounded-3xl" variant="default">
+                          <IoCheckmarkCircleOutline size={24} color="green" />
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <BsLayoutTextWindow
+                        className="cursor-pointer"
+                        size={24}
+                      />
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        )}
       </div>
     </div>
   )
