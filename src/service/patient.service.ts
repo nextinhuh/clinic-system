@@ -1,6 +1,13 @@
 import { patientSchema } from '@/utils/schemas'
 import { CreatePatientFormData, PatientData } from '@/utils/types'
-import { addDoc, collection, getDocs, getFirestore } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+} from 'firebase/firestore'
 
 const PATIENT_FIRESTORE_KEY = 'patients'
 
@@ -22,6 +29,25 @@ export async function allPatient(): Promise<PatientData[]> {
   })
 
   return patientList
+}
+
+export async function patientById(patientId: string): Promise<PatientData> {
+  const db = getFirestore()
+
+  const docRef = doc(db, PATIENT_FIRESTORE_KEY, patientId)
+  const docSnap = await getDoc(docRef)
+
+  if (docSnap.exists()) {
+    return patientSchema.parse({
+      id: docSnap.id,
+      name: docSnap.data().name,
+      age: docSnap.data().age,
+      email: docSnap.data().email,
+      anamnesisId: docSnap.data().anamnesisId ? docSnap.data().anamnesisId : '',
+    })
+  } else {
+    throw new Error('Usuário não encontrado!')
+  }
 }
 
 export async function createPatient(patientData: CreatePatientFormData) {

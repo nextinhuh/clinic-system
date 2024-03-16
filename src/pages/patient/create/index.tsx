@@ -2,7 +2,7 @@ import { FormController } from '@/components/form-controller'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { createPatient } from '@/service/patient.service'
-import { createpatientFormSchema } from '@/utils/schemas'
+import { createPatientFormSchema } from '@/utils/schemas'
 import { CreatePatientFormData } from '@/utils/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -12,7 +12,7 @@ export function CreatePatient() {
   const navigate = useNavigate()
   const { toast } = useToast()
   const form = useForm<CreatePatientFormData>({
-    resolver: zodResolver(createpatientFormSchema),
+    resolver: zodResolver(createPatientFormSchema),
     defaultValues: {
       age: 0,
       name: '',

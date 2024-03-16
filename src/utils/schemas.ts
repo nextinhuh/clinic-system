@@ -73,7 +73,25 @@ export const patientSchema = z.object({
   anamnesisId: z.string().nullable(),
 })
 
-export const createpatientFormSchema = z.object({
+export const createPatientFormSchema = z.object({
+  age: z.coerce
+    .number({ required_error: 'Idade é obrigatório' })
+    .max(100, 'Idade inválida')
+    .gte(-1, { message: 'Idade é obrigatório' }),
+  name: z
+    .string({ required_error: 'Nome é obrigatório' })
+    .refine((data) => data.trim() !== '', {
+      message: 'O campo nome não pode ser vazio',
+    })
+    .refine((data) => data.length >= 3, {
+      message: 'O campo nome deve conter mais de 3 caracteres',
+    }),
+  email: z
+    .string({ required_error: 'E-mail é obrigatório' })
+    .email({ message: 'E-mail inválido' }),
+})
+
+export const updatePatientFormSchema = z.object({
   age: z.coerce
     .number({ required_error: 'Idade é obrigatório' })
     .max(100, 'Idade inválida')
