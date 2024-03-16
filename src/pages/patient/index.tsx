@@ -15,6 +15,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IoCloseCircleOutline, IoCheckmarkCircleOutline } from 'react-icons/io5'
 import { BsLayoutTextWindow } from 'react-icons/bs'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export function Patient() {
   const navigate = useNavigate()
@@ -22,6 +23,10 @@ export function Patient() {
 
   function handleCreatePatient() {
     navigate('/patient/create')
+  }
+
+  function handleDetailPatient(patientId: string | null) {
+    navigate(`/patient/${patientId}`)
   }
 
   useMemo(async () => {
@@ -39,55 +44,84 @@ export function Patient() {
 
       <div className="w-[100%] border rounded-lg p-8 mt-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="font-bold mb-4">Lista das últimas consultas</h1>
+          <h1 className="font-bold mb-4">Lista dos pacientes cadastrados</h1>
           <Button onClick={handleCreatePatient} variant="outline">
             Adicionar paciente
           </Button>
         </div>
 
-        {patientList.length !== 0 && (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>Idade</TableHead>
-                <TableHead>E-mail</TableHead>
-                <TableHead>Anamnese</TableHead>
-                <TableHead>Detalhes</TableHead>
-              </TableRow>
-            </TableHeader>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Nome</TableHead>
+              <TableHead className="text-center">Idade</TableHead>
+              <TableHead className="text-center">E-mail</TableHead>
+              <TableHead className="text-center">Anamnese</TableHead>
+              <TableHead className="text-center">Detalhes</TableHead>
+            </TableRow>
+          </TableHeader>
+
+          {patientList.length !== 0 ? (
             <TableBody>
               {patientList.map((patient) => {
                 return (
                   <TableRow key={patient.id}>
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium text-center">
                       {patient.name}
                     </TableCell>
-                    <TableCell>{patient.age}</TableCell>
-                    <TableCell>{patient.email}</TableCell>
-                    <TableCell>
+                    <TableCell className="text-center">{patient.age}</TableCell>
+                    <TableCell className="text-center">
+                      {patient.email}
+                    </TableCell>
+                    <TableCell className="text-center">
                       {patient.anamnesisId === '' ? (
-                        <Badge className="w-11 rounded-3xl" variant="default">
-                          <IoCloseCircleOutline size={24} color="red" />
+                        <Badge
+                          className="w-11 rounded-3xl"
+                          variant="destructive"
+                        >
+                          <IoCloseCircleOutline size={24} />
                         </Badge>
                       ) : (
-                        <Badge className="w-11 rounded-3xl" variant="default">
-                          <IoCheckmarkCircleOutline size={24} color="green" />
+                        <Badge className="w-11 rounded-3xl" variant="success">
+                          <IoCheckmarkCircleOutline size={24} />
                         </Badge>
                       )}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="flex justify-center">
                       <BsLayoutTextWindow
                         className="cursor-pointer"
                         size={24}
+                        onClick={() => handleDetailPatient(patient.id)}
                       />
                     </TableCell>
                   </TableRow>
                 )
               })}
             </TableBody>
-          </Table>
-        )}
+          ) : (
+            <TableBody>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <Skeleton className="w-[80%] h-[20px] ml-8 rounded-xl" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="w-[80%] h-[20px] ml-8 rounded-xl" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="w-[80%] h-[20px] ml-8 rounded-xl" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="w-[80%] h-[20px] ml-8 rounded-xl" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="w-[80%] h-[20px] ml-8 rounded-xl" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          )}
+        </Table>
       </div>
     </div>
   )
