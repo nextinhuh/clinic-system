@@ -8,6 +8,8 @@ import {
   patientSchema,
   createPatientFormSchema,
   updatePatientFormSchema,
+  patientAnamnesisSchema,
+  updatePatientAnamnesisFormSchema,
 } from './schemas'
 
 export type UserData = z.infer<typeof userSchema>
@@ -18,3 +20,7 @@ export type GetFirebaseUserData = z.infer<typeof getFirebaseUserSchema>
 export type PatientData = z.infer<typeof patientSchema>
 export type CreatePatientFormData = z.infer<typeof createPatientFormSchema>
 export type UpdatePatientFormData = z.infer<typeof updatePatientFormSchema>
+export type PatientAnamnesisData = z.infer<typeof patientAnamnesisSchema>
+export type UpdatePatientAnamnesisFormData = z.infer<
+  typeof updatePatientAnamnesisFormSchema
+>

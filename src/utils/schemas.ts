@@ -108,3 +108,66 @@ export const updatePatientFormSchema = z.object({
     .string({ required_error: 'E-mail é obrigatório' })
     .email({ message: 'E-mail inválido' }),
 })
+
+export const patientAnamnesisSchema = z.object({
+  id: z.string(),
+  reason: z.number(),
+  symptoms: z.string(),
+  medicalHistory: z.string(),
+  takingMedication: z.string(),
+  allergy: z.string(),
+  diseaseHistory: z.string(),
+  consumeDrug: z.string(),
+  dailyRoutine: z.string(),
+  emotionalState: z.string(),
+  patientId: z.string(),
+})
+
+export const updatePatientAnamnesisFormSchema = z.object({
+  reason: z
+    .string({ required_error: 'Razão é obrigatório' })
+    .refine((data) => data.trim() !== '', {
+      message: 'O campo razão não pode ser vazio',
+    }),
+  symptoms: z
+    .string({ required_error: 'Sintomas é obrigatório' })
+    .refine((data) => data.trim() !== '', {
+      message: 'O campo sintomas não pode ser vazio',
+    }),
+  medicalHistory: z
+    .string({ required_error: 'Histórico médico é obrigatório' })
+    .refine((data) => data.trim() !== '', {
+      message: 'O campo histórico médico não pode ser vazio',
+    }),
+  takingMedication: z
+    .string({ required_error: 'Tomando medicação é obrigatório' })
+    .refine((data) => data.trim() !== '', {
+      message: 'O campo tomando medicação não pode ser vazio',
+    }),
+  allergy: z
+    .string({ required_error: 'Arlegias é obrigatório' })
+    .refine((data) => data.trim() !== '', {
+      message: 'O campo arlegias não pode ser vazio',
+    }),
+  diseaseHistory: z
+    .string({ required_error: 'Histórico de doenças é obrigatório' })
+    .refine((data) => data.trim() !== '', {
+      message: 'O campo histórico de doenças não pode ser vazio',
+    }),
+  consumeDrug: z
+    .string({ required_error: 'Consome droga é obrigatório' })
+    .refine((data) => data.trim() !== '', {
+      message: 'O campo consome drogas não pode ser vazio',
+    }),
+  dailyRoutine: z
+    .string({ required_error: 'Rotina diária é obrigatório' })
+    .refine((data) => data.trim() !== '', {
+      message: 'O campo rotina diária não pode ser vazio',
+    }),
+  emotionalState: z
+    .string({ required_error: 'Estado emocional é obrigatório' })
+    .refine((data) => data.trim() !== '', {
+      message: 'O campo estado emocional não pode ser vazio',
+    }),
+  patientId: z.string({ required_error: 'Estado emocional é obrigatório' }),
+})

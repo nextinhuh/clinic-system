@@ -48,8 +48,9 @@ export function PatientCard({ patientId }: PatientCardProps) {
 
   useMemo(async () => {
     try {
+      if (!patientId) return
       setIsLoading(true)
-      const patientData = await patientById(String(patientId))
+      const patientData = await patientById(patientId)
       handleSetValueForm(patientData)
       setIsLoading(false)
     } catch (error) {

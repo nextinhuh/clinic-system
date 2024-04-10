@@ -9,12 +9,14 @@ import {
   FormMessage,
 } from '../ui/form'
 import { Input } from '../ui/input'
+import { Textarea } from '../ui/textarea'
 
 interface InputListProps {
   name: string
   type?: string
   label: string
   placeholder?: string
+  formItemClassName?: string
 }
 
 interface FormControllerProps {
@@ -41,14 +43,22 @@ export function FormController({
             control={form.control}
             name={input.name}
             render={({ field }) => (
-              <FormItem className="w-[100%]">
+              <FormItem
+                className={
+                  input.formItemClassName ? input.formItemClassName : 'w-[100%]'
+                }
+              >
                 <FormLabel>{input.label}</FormLabel>
                 <FormControl>
-                  <Input
-                    type={input.type ? input.type : 'text'}
-                    placeholder={input.placeholder}
-                    {...field}
-                  />
+                  {input.type && input.type === 'textarea' ? (
+                    <Textarea placeholder={input.placeholder} {...field} />
+                  ) : (
+                    <Input
+                      type={input.type ? input.type : 'text'}
+                      placeholder={input.placeholder}
+                      {...field}
+                    />
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>

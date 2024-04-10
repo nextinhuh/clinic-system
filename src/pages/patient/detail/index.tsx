@@ -17,7 +17,7 @@ export function DetailPatient() {
       <h1 className="text-3xl font-bold">Adicionar Paciente</h1>
 
       <div className="flex flex-col w-[100%] border rounded-lg p-8 mt-8 flex items-center justify-center">
-        <Tabs value={tabValue} className="w-[400xp] mt-10">
+        <Tabs value={tabValue} className="w-[100%]">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger
               onClick={() => handleChangeTabValue('patientDetail')}
@@ -33,7 +33,10 @@ export function DetailPatient() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="patientDetail">
+          <TabsContent
+            value="patientDetail"
+            className="flex items-center justify-center"
+          >
             <PatientCard patientId={patientId} />
           </TabsContent>
           <TabsContent value="anamnesisDetail">
