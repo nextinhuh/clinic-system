@@ -40,7 +40,7 @@ export function DetailPatient() {
             <PatientCard patientId={patientId} />
           </TabsContent>
           <TabsContent value="anamnesisDetail">
-            <AnamnesisCard />
+            <AnamnesisCard patientId={patientId} />
           </TabsContent>
         </Tabs>
       </div>

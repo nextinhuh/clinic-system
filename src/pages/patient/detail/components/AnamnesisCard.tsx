@@ -5,7 +5,11 @@ import { UpdatePatientAnamnesisFormData } from '@/utils/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
-export function AnamnesisCard() {
+interface AnamnesisCardProps {
+  patientId?: string
+}
+
+export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
   const form = useForm<UpdatePatientAnamnesisFormData>({
     resolver: zodResolver(updatePatientAnamnesisFormSchema),
     defaultValues: {
@@ -17,6 +21,8 @@ export function AnamnesisCard() {
       medicalHistory: '',
       reason: '',
       symptoms: '',
+      takingMedication: '',
+      patientId,
     },
   })
   const inputList = [
@@ -66,6 +72,12 @@ export function AnamnesisCard() {
       name: 'symptoms',
       label: 'Sintomas',
       placeholder: 'Digite os sintomas do paciente',
+      type: 'textarea',
+    },
+    {
+      name: 'takingMedication',
+      label: 'Tomando medicações',
+      placeholder: 'Digite os medicamentos que o paciente esta tomando',
       type: 'textarea',
     },
   ]
