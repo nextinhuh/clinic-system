@@ -1,10 +1,10 @@
 import { useAuth } from '@/hook/Auth'
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover'
 import { getUserNameFallback } from '@/utils/parse'
 import { CgProfile, CgLogOut } from 'react-icons/cg'
 import { IoMdSettings } from 'react-icons/io'
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { Separator } from '../ui/separator'
+import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar'
+import { Separator } from '../../ui/separator'
 
 interface AvatarProps {
   openUpdateProfileDialog: () => void

@@ -1,11 +1,11 @@
 import { ReactNode, useEffect, useRef } from 'react'
-import { TopBar } from './TopBar'
+import { TopBar } from './components/TopBar'
 import {
   UpdateProfileDialog,
   UpdateProfileDialogRef,
 } from '../update-profile-dialog'
 import { useAuth } from '@/hook/Auth'
-import { SheetNavMenu, SheetNavMenuRef } from './SheetNavMenu'
+import { SheetNavMenu, SheetNavMenuRef } from './components/SheetNavMenu'
 
 type AppLayoutProps = {
   children: ReactNode

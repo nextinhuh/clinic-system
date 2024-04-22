@@ -1,4 +1,4 @@
-import { NavMenu } from '../app-layout/NavMenu'
+import { NavMenu } from './NavMenu'
 import { IoMdMenu } from 'react-icons/io'
 import { AvatarProfile } from './AvatarProfile'
 
