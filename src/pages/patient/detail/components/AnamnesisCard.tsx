@@ -1,5 +1,6 @@
 import { FormController } from '@/components/form-controller'
 import { Button } from '@/components/ui/button'
+import { createAnamnesisPatient } from '@/service/patient.service'
 import { updatePatientAnamnesisFormSchema } from '@/utils/schemas'
 import { UpdatePatientAnamnesisFormData } from '@/utils/types'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -85,7 +86,7 @@ export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
   async function handleUpdatePatientAnamnesis(
     patientAnamnesisData: UpdatePatientAnamnesisFormData,
   ) {
-    console.log(patientAnamnesisData)
+    await createAnamnesisPatient(patientAnamnesisData)
   }
 
   return (

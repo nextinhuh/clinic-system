@@ -1,5 +1,9 @@
 import { patientSchema } from '@/utils/schemas'
-import { CreatePatientFormData, PatientData } from '@/utils/types'
+import {
+  CreatePatientFormData,
+  PatientData,
+  UpdatePatientAnamnesisFormData,
+} from '@/utils/types'
 import {
   addDoc,
   collection,
@@ -10,6 +14,7 @@ import {
 } from 'firebase/firestore'
 
 const PATIENT_FIRESTORE_KEY = 'patients'
+const ANAMNESIS_FIRESTORE_KEY = 'anamnesis'
 
 export async function allPatient(): Promise<PatientData[]> {
   const patientList: PatientData[] = []
@@ -57,6 +62,27 @@ export async function createPatient(patientData: CreatePatientFormData) {
     name: patientData.name,
     age: patientData.age,
     email: patientData.email,
+  }).catch((error) => {
+    throw new Error(error.message)
+  })
+}
+
+export async function createAnamnesisPatient(
+  anamnesisData: UpdatePatientAnamnesisFormData,
+) {
+  const db = getFirestore()
+
+  await addDoc(collection(db, ANAMNESIS_FIRESTORE_KEY), {
+    patientId: anamnesisData.patientId,
+    reason: anamnesisData.reason,
+    symptoms: anamnesisData.symptoms,
+    medicalHistory: anamnesisData.medicalHistory,
+    takingMedication: anamnesisData.takingMedication,
+    allergy: anamnesisData.allergy,
+    diseaseHistory: anamnesisData.diseaseHistory,
+    consumeDrug: anamnesisData.consumeDrug,
+    dailyRoutine: anamnesisData.dailyRoutine,
+    emotionalState: anamnesisData.emotionalState,
   }).catch((error) => {
     throw new Error(error.message)
   })
