@@ -13,6 +13,7 @@ import {
   getDocs,
   getFirestore,
   query,
+  updateDoc,
   where,
 } from 'firebase/firestore'
 
@@ -123,4 +124,27 @@ export async function getAnamnesisByPatientId(
   } else {
     throw new Error('Anamnesis não encontrada!')
   }
+}
+
+export async function updateAnamnesisPatient(
+  anamnesisId: string,
+  anamnesisData: UpdatePatientAnamnesisFormData,
+) {
+  const db = getFirestore()
+
+  const docRef = doc(db, ANAMNESIS_FIRESTORE_KEY, anamnesisId)
+
+  await updateDoc(docRef, {
+    reason: anamnesisData.reason,
+    symptoms: anamnesisData.symptoms,
+    medicalHistory: anamnesisData.medicalHistory,
+    takingMedication: anamnesisData.takingMedication,
+    allergy: anamnesisData.allergy,
+    diseaseHistory: anamnesisData.diseaseHistory,
+    consumeDrug: anamnesisData.consumeDrug,
+    dailyRoutine: anamnesisData.dailyRoutine,
+    emotionalState: anamnesisData.emotionalState,
+  }).catch((error) => {
+    throw new Error(error.message)
+  })
 }

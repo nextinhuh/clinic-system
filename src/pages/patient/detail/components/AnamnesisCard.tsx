@@ -4,6 +4,7 @@ import { useToast } from '@/components/ui/use-toast'
 import {
   createAnamnesisPatient,
   getAnamnesisByPatientId,
+  updateAnamnesisPatient,
 } from '@/service/patient.service'
 import { updatePatientAnamnesisFormSchema } from '@/utils/schemas'
 import {
@@ -93,6 +94,7 @@ export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
 
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [anamnesisId, setAnamnesisId] = useState<string>()
 
   useMemo(async () => {
     try {
@@ -100,6 +102,7 @@ export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
       setIsLoading(true)
       const anamnesisData = await getAnamnesisByPatientId(patientId)
       handleSetValueForm(anamnesisData)
+      setAnamnesisId(anamnesisData.id)
       setIsLoading(false)
     } catch (error) {
       setIsLoading(false)
@@ -149,10 +152,14 @@ export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
     )
   }
 
-  async function handleUpdatePatientAnamnesis(
+  async function handlePatientAnamnesis(
     patientAnamnesisData: UpdatePatientAnamnesisFormData,
   ) {
-    await createAnamnesisPatient(patientAnamnesisData)
+    if (anamnesisId !== undefined) {
+      await updateAnamnesisPatient(anamnesisId, patientAnamnesisData)
+    } else {
+      await createAnamnesisPatient(patientAnamnesisData)
+    }
   }
 
   return (
@@ -167,7 +174,7 @@ export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
             form={form}
             inputList={inputList}
             className="w-[100%] flex flex-col gap-6"
-            onSubmit={form.handleSubmit(handleUpdatePatientAnamnesis)}
+            onSubmit={form.handleSubmit(handlePatientAnamnesis)}
           >
             <div className="flex gap-6 mt-6 w-[100%]">
               <Button
@@ -185,7 +192,7 @@ export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
                 type="submit"
                 isLoading={form.formState.isSubmitting}
               >
-                Atualizar dados
+                {anamnesisId ? 'Atualizar' : 'Criar'} dados
               </Button>
             </div>
           </FormController>
