@@ -12,6 +12,8 @@ export function DetailPatient() {
     setTabValue(newValue)
   }
 
+  console.log(tabValue)
+
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold">Adicionar Paciente</h1>

@@ -1,6 +1,7 @@
-import { patientSchema } from '@/utils/schemas'
+import { patientAnamnesisSchema, patientSchema } from '@/utils/schemas'
 import {
   CreatePatientFormData,
+  PatientAnamnesisData,
   PatientData,
   UpdatePatientAnamnesisFormData,
 } from '@/utils/types'
@@ -11,6 +12,8 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  query,
+  where,
 } from 'firebase/firestore'
 
 const PATIENT_FIRESTORE_KEY = 'patients'
@@ -86,4 +89,38 @@ export async function createAnamnesisPatient(
   }).catch((error) => {
     throw new Error(error.message)
   })
+}
+
+export async function getAnamnesisByPatientId(
+  patientId: string,
+): Promise<PatientAnamnesisData> {
+  const db = getFirestore()
+
+  const docRef = collection(db, ANAMNESIS_FIRESTORE_KEY)
+  const q = query(docRef, where('patientId', '==', patientId))
+
+  const querySnap = await getDocs(q)
+
+  let anamneseData
+
+  if (!querySnap.empty) {
+    querySnap.forEach((doc) => {
+      anamneseData = doc
+    })
+    return patientAnamnesisSchema.parse({
+      id: anamneseData.id,
+      reason: anamneseData.data().reason,
+      symptoms: anamneseData.data().symptoms,
+      medicalHistory: anamneseData.data().medicalHistory,
+      takingMedication: anamneseData.data().takingMedication,
+      allergy: anamneseData.data().allergy,
+      diseaseHistory: anamneseData.data().diseaseHistory,
+      consumeDrug: anamneseData.data().consumeDrug,
+      dailyRoutine: anamneseData.data().dailyRoutine,
+      emotionalState: anamneseData.data().emotionalState,
+      patientId: anamneseData.data().patientId,
+    })
+  } else {
+    throw new Error('Anamnesis não encontrada!')
+  }
 }
