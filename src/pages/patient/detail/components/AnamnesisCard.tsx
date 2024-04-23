@@ -1,5 +1,6 @@
 import { FormController } from '@/components/form-controller'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useToast } from '@/components/ui/use-toast'
 import {
   createAnamnesisPatient,
@@ -165,8 +166,27 @@ export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
   return (
     <>
       {isLoading ? (
-        <div>
-          <h1>loading</h1>
+        <div className="w-10/12 flex flex-col gap-6 mt-8">
+          <Skeleton className="w-[20%] h-[25px]" />
+          <Skeleton className="w-[100%] h-[50px]" />
+          <Skeleton className="w-[20%] h-[25px]" />
+          <Skeleton className="w-[100%] h-[50px]" />
+          <Skeleton className="w-[20%] h-[25px]" />
+          <Skeleton className="w-[100%] h-[50px]" />
+          <Skeleton className="w-[20%] h-[25px]" />
+          <Skeleton className="w-[100%] h-[50px]" />
+          <Skeleton className="w-[20%] h-[25px]" />
+          <Skeleton className="w-[100%] h-[50px]" />
+          <Skeleton className="w-[20%] h-[25px]" />
+          <Skeleton className="w-[100%] h-[50px]" />
+          <Skeleton className="w-[20%] h-[25px]" />
+          <Skeleton className="w-[100%] h-[50px]" />
+          <Skeleton className="w-[20%] h-[25px]" />
+          <Skeleton className="w-[100%] h-[50px]" />
+          <div className="flex gap-6">
+            <Skeleton className="w-[100%] h-[30px]" />
+            <Skeleton className="w-[100%] h-[30px]" />
+          </div>
         </div>
       ) : (
         <div>
