@@ -1,3 +1,4 @@
+import { toast } from '@/components/ui/use-toast'
 import { patientAnamnesisSchema, patientSchema } from '@/utils/schemas'
 import {
   CreatePatientFormData,
@@ -87,9 +88,17 @@ export async function createAnamnesisPatient(
     consumeDrug: anamnesisData.consumeDrug,
     dailyRoutine: anamnesisData.dailyRoutine,
     emotionalState: anamnesisData.emotionalState,
-  }).catch((error) => {
-    throw new Error(error.message)
   })
+    .catch((error) => {
+      throw new Error(error.message)
+    })
+    .finally(() => {
+      toast({
+        variant: 'success',
+        title: 'Dados atualizados com sucesso!',
+        duration: 3000, // 3 SECONDS
+      })
+    })
 }
 
 export async function getAnamnesisByPatientId(
@@ -144,7 +153,15 @@ export async function updateAnamnesisPatient(
     consumeDrug: anamnesisData.consumeDrug,
     dailyRoutine: anamnesisData.dailyRoutine,
     emotionalState: anamnesisData.emotionalState,
-  }).catch((error) => {
-    throw new Error(error.message)
   })
+    .catch((error) => {
+      throw new Error(error.message)
+    })
+    .finally(() => {
+      toast({
+        variant: 'success',
+        title: 'Dados atualizados com sucesso!',
+        duration: 3000, // 3 SECONDS
+      })
+    })
 }
