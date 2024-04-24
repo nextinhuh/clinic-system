@@ -4,23 +4,29 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useToast } from '@/components/ui/use-toast'
 import {
   createAnamnesisPatient,
-  getAnamnesisByPatientId,
+  getAnamnesisByAnamneseId,
   updateAnamnesisPatient,
 } from '@/service/patient.service'
 import { updatePatientAnamnesisFormSchema } from '@/utils/schemas'
 import {
   PatientAnamnesisData,
+  PatientData,
   UpdatePatientAnamnesisFormData,
 } from '@/utils/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useParams } from 'react-router-dom'
 
 interface AnamnesisCardProps {
-  patientId?: string
+  patientData?: PatientData
 }
 
-export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
+export function AnamnesisCard({ patientData }: AnamnesisCardProps) {
+  const { patientId } = useParams()
+  const { toast } = useToast()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
   const form = useForm<UpdatePatientAnamnesisFormData>({
     resolver: zodResolver(updatePatientAnamnesisFormSchema),
     defaultValues: {
@@ -36,6 +42,7 @@ export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
       patientId,
     },
   })
+
   const inputList = [
     {
       name: 'allergy',
@@ -93,17 +100,15 @@ export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
     },
   ]
 
-  const { toast } = useToast()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [anamnesisId, setAnamnesisId] = useState<string>()
-
   useMemo(async () => {
     try {
-      if (!patientId) return
+      if (!patientData?.anamnesisId)
+        throw new Error('Anamnesis não encontrada!')
       setIsLoading(true)
-      const anamnesisData = await getAnamnesisByPatientId(patientId)
+      const anamnesisData = await getAnamnesisByAnamneseId(
+        patientData.anamnesisId,
+      )
       handleSetValueForm(anamnesisData)
-      setAnamnesisId(anamnesisData.id)
       setIsLoading(false)
     } catch (error) {
       setIsLoading(false)
@@ -115,7 +120,7 @@ export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
         })
       }
     }
-  }, [])
+  }, [patientData?.anamnesisId])
 
   function handleSetValueForm(anamnesisData: PatientAnamnesisData) {
     form.setValue(
@@ -153,11 +158,14 @@ export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
     )
   }
 
-  async function handlePatientAnamnesis(
+  async function handleAnamnesisPatient(
     patientAnamnesisData: UpdatePatientAnamnesisFormData,
   ) {
-    if (anamnesisId !== undefined) {
-      await updateAnamnesisPatient(anamnesisId, patientAnamnesisData)
+    if (patientData?.anamnesisId !== undefined) {
+      await updateAnamnesisPatient(
+        patientData?.anamnesisId as string,
+        patientAnamnesisData,
+      )
     } else {
       await createAnamnesisPatient(patientAnamnesisData)
     }
@@ -194,7 +202,7 @@ export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
             form={form}
             inputList={inputList}
             className="w-[100%] flex flex-col gap-6"
-            onSubmit={form.handleSubmit(handlePatientAnamnesis)}
+            onSubmit={form.handleSubmit(handleAnamnesisPatient)}
           >
             <div className="flex gap-6 mt-6 w-[100%]">
               <Button
@@ -212,7 +220,7 @@ export function AnamnesisCard({ patientId }: AnamnesisCardProps) {
                 type="submit"
                 isLoading={form.formState.isSubmitting}
               >
-                {anamnesisId ? 'Atualizar' : 'Criar'} dados
+                {patientData?.anamnesisId ? 'Atualizar' : 'Criar'} dados
               </Button>
             </div>
           </FormController>

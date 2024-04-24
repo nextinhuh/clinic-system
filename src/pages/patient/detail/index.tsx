@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AnamnesisCard } from './components/AnamnesisCard'
 import { patientById } from '@/service/patient.service'
 import { PatientData } from '@/utils/types'
-import { patientSchema } from '@/utils/schemas'
 import { toast } from '@/components/ui/use-toast'
 
 export function DetailPatient() {
@@ -64,7 +63,7 @@ export function DetailPatient() {
             />
           </TabsContent>
           <TabsContent value="anamnesisDetail">
-            <AnamnesisCard patientId={patientId} />
+            <AnamnesisCard patientData={patientData} />
           </TabsContent>
         </Tabs>
       </div>

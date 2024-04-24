@@ -119,7 +119,19 @@ export async function getAnamnesisByAnamneseId(
   const docSnap = await getDoc(docRef)
 
   if (docSnap.exists()) {
-    return patientAnamnesisSchema.parse(docSnap.data())
+    return patientAnamnesisSchema.parse({
+      id: docSnap.id,
+      reason: docSnap.data().reason,
+      symptoms: docSnap.data().symptoms,
+      medicalHistory: docSnap.data().medicalHistory,
+      takingMedication: docSnap.data().takingMedication,
+      allergy: docSnap.data().allergy,
+      diseaseHistory: docSnap.data().diseaseHistory,
+      consumeDrug: docSnap.data().consumeDrug,
+      dailyRoutine: docSnap.data().dailyRoutine,
+      emotionalState: docSnap.data().emotionalState,
+      patientId: docSnap.data().patientId,
+    })
   } else {
     throw new Error('Anamnesis não encontrada!')
   }
