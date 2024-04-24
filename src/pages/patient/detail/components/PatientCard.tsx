@@ -1,9 +1,7 @@
 import { FormController } from '@/components/form-controller'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useToast } from '@/components/ui/use-toast'
-import { patientById } from '@/service/patient.service'
-import { updateUserFormSchema } from '@/utils/schemas'
+import { patientSchema, updateUserFormSchema } from '@/utils/schemas'
 import { PatientData, UpdatePatientFormData } from '@/utils/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo, useState } from 'react'
@@ -11,11 +9,14 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
 interface PatientCardProps {
-  patientId?: string
+  patientData?: PatientData
+  isLoadingpatient: boolean
 }
 
-export function PatientCard({ patientId }: PatientCardProps) {
-  const { toast } = useToast()
+export function PatientCard({
+  patientData,
+  isLoadingpatient,
+}: PatientCardProps) {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const form = useForm<UpdatePatientFormData>({
@@ -47,23 +48,10 @@ export function PatientCard({ patientId }: PatientCardProps) {
   ]
 
   useMemo(async () => {
-    try {
-      if (!patientId) return
-      setIsLoading(true)
-      const patientData = await patientById(patientId)
-      handleSetValueForm(patientData)
-      setIsLoading(false)
-    } catch (error) {
-      setIsLoading(false)
-      if ((error as Error).message) {
-        toast({
-          variant: 'destructive',
-          title: `${(error as Error).message}`,
-          duration: 3000, // 3 SECONDS
-        })
-      }
-    }
-  }, [])
+    setIsLoading(isLoadingpatient)
+    if (!patientData) return
+    handleSetValueForm(patientSchema.parse(patientData))
+  }, [patientData])
 
   function handleSetValueForm(patientData: PatientData) {
     form.setValue('name', patientData?.name ? patientData.name : '')

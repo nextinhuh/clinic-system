@@ -1,18 +1,37 @@
 import { useParams } from 'react-router-dom'
 import { PatientCard } from './components/PatientCard'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AnamnesisCard } from './components/AnamnesisCard'
+import { patientById } from '@/service/patient.service'
+import { PatientData } from '@/utils/types'
+import { patientSchema } from '@/utils/schemas'
+import { toast } from '@/components/ui/use-toast'
 
 export function DetailPatient() {
   const { patientId } = useParams()
   const [tabValue, setTabValue] = useState<string>('patientDetail')
+  const [patientData, setPatientData] = useState<PatientData>()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   function handleChangeTabValue(newValue: string): void {
     setTabValue(newValue)
   }
 
-  console.log(tabValue)
+  useMemo(async () => {
+    try {
+      if (!patientId) return
+      setIsLoading(true)
+      setPatientData(await patientById(patientId))
+      setIsLoading(false)
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: `${(error as Error).message}`,
+        duration: 3000, // 3 SECONDS
+      })
+    }
+  }, [])
 
   return (
     <div className="p-8">
@@ -39,7 +58,10 @@ export function DetailPatient() {
             value="patientDetail"
             className="flex items-center justify-center"
           >
-            <PatientCard patientId={patientId} />
+            <PatientCard
+              patientData={patientData}
+              isLoadingpatient={isLoading}
+            />
           </TabsContent>
           <TabsContent value="anamnesisDetail">
             <AnamnesisCard patientId={patientId} />
