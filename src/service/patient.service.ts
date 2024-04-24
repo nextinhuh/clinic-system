@@ -13,9 +13,7 @@ import {
   getDoc,
   getDocs,
   getFirestore,
-  query,
   updateDoc,
-  where,
 } from 'firebase/firestore'
 
 const PATIENT_FIRESTORE_KEY = 'patients'
@@ -101,35 +99,16 @@ export async function createAnamnesisPatient(
     })
 }
 
-export async function getAnamnesisByPatientId(
-  patientId: string,
+export async function getAnamnesisByAnamneseId(
+  anamneseId: string,
 ): Promise<PatientAnamnesisData> {
   const db = getFirestore()
 
-  const docRef = collection(db, ANAMNESIS_FIRESTORE_KEY)
-  const q = query(docRef, where('patientId', '==', patientId))
+  const docRef = doc(db, ANAMNESIS_FIRESTORE_KEY, anamneseId)
+  const docSnap = await getDoc(docRef)
 
-  const querySnap = await getDocs(q)
-
-  let anamneseData
-
-  if (!querySnap.empty) {
-    querySnap.forEach((doc) => {
-      anamneseData = doc
-    })
-    return patientAnamnesisSchema.parse({
-      id: anamneseData.id,
-      reason: anamneseData.data().reason,
-      symptoms: anamneseData.data().symptoms,
-      medicalHistory: anamneseData.data().medicalHistory,
-      takingMedication: anamneseData.data().takingMedication,
-      allergy: anamneseData.data().allergy,
-      diseaseHistory: anamneseData.data().diseaseHistory,
-      consumeDrug: anamneseData.data().consumeDrug,
-      dailyRoutine: anamneseData.data().dailyRoutine,
-      emotionalState: anamneseData.data().emotionalState,
-      patientId: anamneseData.data().patientId,
-    })
+  if (docSnap.exists()) {
+    return patientAnamnesisSchema.parse(docSnap.data())
   } else {
     throw new Error('Anamnesis não encontrada!')
   }
