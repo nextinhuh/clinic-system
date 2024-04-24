@@ -87,6 +87,17 @@ export async function createAnamnesisPatient(
     dailyRoutine: anamnesisData.dailyRoutine,
     emotionalState: anamnesisData.emotionalState,
   })
+    .then(async (docRef) => {
+      // add anamnesisId in patient document
+      const docRefPatient = doc(
+        db,
+        PATIENT_FIRESTORE_KEY,
+        anamnesisData.patientId,
+      )
+      await updateDoc(docRefPatient, {
+        anamnesisId: docRef.id,
+      })
+    })
     .catch((error) => {
       throw new Error(error.message)
     })
