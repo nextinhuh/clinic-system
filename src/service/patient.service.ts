@@ -5,6 +5,7 @@ import {
   PatientAnamnesisData,
   PatientData,
   UpdatePatientAnamnesisFormData,
+  UpdatePatientFormData,
 } from '@/utils/types'
 import {
   addDoc,
@@ -62,6 +63,19 @@ export async function createPatient(patientData: CreatePatientFormData) {
   const db = getFirestore()
 
   await addDoc(collection(db, PATIENT_FIRESTORE_KEY), patientData).catch(
+    (error) => {
+      throw new Error(error.message)
+    },
+  )
+}
+
+export async function updatePatient(
+  patientId: string,
+  patientData: UpdatePatientFormData,
+) {
+  const db = getFirestore()
+
+  await updateDoc(doc(db, PATIENT_FIRESTORE_KEY, patientId), patientData).catch(
     (error) => {
       throw new Error(error.message)
     },
