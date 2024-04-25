@@ -1,30 +1,45 @@
-# React + TypeScript + Vite
+# Clinic System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+System created for patient management.
 
-Currently, two official plugins are available:
+<img src="https://i.imgur.com/nh4z2jn.png">
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+Technologies used:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- [@vitejs/react-ts](https://vitejs.dev/guide/#scaffolding-your-first-vite-project)
+- [@firebase](https://firebase.google.com/)
+- [@hookform](https://react-hook-form.com/)
+- [@radix-ui](https://www.radix-ui.com/)
+- [@zod](https://github.com/colinhacks/zod)
+- [@eslint](https://github.com/eslint/eslint)
+- [@clsx](https://github.com/lukeed/clsx)
 
-- Configure the top-level `parserOptions` property like this:
+## How to start the project
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+
+After downloading the project, install the dependencies
+
+```
+~/npm i       # npm
+~/yarn        # yarn
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Create `.env` file and add the following environment variables
+- To generate all keys access the [Firebase Console](https://console.firebase.google.com/)
+
+```
+FIREBASE_API_KEY=
+FIREBASE_AUTH_DOMAIN=
+FIREBASE_PROJECT_ID=
+FIREBASE_STORAGE_BUCKET=
+FIREBASE_MESSAGING_SENDER_ID=
+FIREBASE_APP_ID=
+```
+
+
+To start the project, call the dev script
+```
+~/npm run dev       # npm
+~/yarn dev          # yarn
+```
