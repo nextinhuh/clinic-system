@@ -75,11 +75,17 @@ export async function updatePatient(
 ) {
   const db = getFirestore()
 
-  await updateDoc(doc(db, PATIENT_FIRESTORE_KEY, patientId), patientData).catch(
-    (error) => {
+  await updateDoc(doc(db, PATIENT_FIRESTORE_KEY, patientId), patientData)
+    .catch((error) => {
       throw new Error(error.message)
-    },
-  )
+    })
+    .finally(() => {
+      toast({
+        variant: 'success',
+        title: 'Dados atualizados com sucesso!',
+        duration: 3000, // 3 SECONDS
+      })
+    })
 }
 
 export async function createAnamnesisPatient(
