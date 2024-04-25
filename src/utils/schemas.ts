@@ -111,7 +111,7 @@ export const updatePatientFormSchema = z.object({
 
 export const patientAnamnesisSchema = z.object({
   id: z.string(),
-  reason: z.number(),
+  reason: z.string(),
   symptoms: z.string(),
   medicalHistory: z.string(),
   takingMedication: z.string(),
