@@ -16,14 +16,14 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 interface AnamnesisCardProps {
   patientData?: PatientData
 }
 
 export function AnamnesisCard({ patientData }: AnamnesisCardProps) {
-  const { patientId } = useParams()
+  const navigate = useNavigate()
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -39,7 +39,7 @@ export function AnamnesisCard({ patientData }: AnamnesisCardProps) {
       reason: '',
       symptoms: '',
       takingMedication: '',
-      patientId,
+      patientId: String(patientData?.id),
     },
   })
 
@@ -102,14 +102,14 @@ export function AnamnesisCard({ patientData }: AnamnesisCardProps) {
 
   useMemo(async () => {
     try {
-      if (!patientData?.anamnesisId)
-        throw new Error('Anamnesis não encontrada!')
-      setIsLoading(true)
-      const anamnesisData = await getAnamnesisByAnamneseId(
-        patientData.anamnesisId,
-      )
-      handleSetValueForm(anamnesisData)
-      setIsLoading(false)
+      if (patientData?.anamnesisId) {
+        setIsLoading(true)
+        const anamnesisData = await getAnamnesisByAnamneseId(
+          patientData?.anamnesisId,
+        )
+        handleSetValueForm(anamnesisData)
+        setIsLoading(false)
+      }
     } catch (error) {
       setIsLoading(false)
       if ((error as Error).message) {
@@ -120,50 +120,20 @@ export function AnamnesisCard({ patientData }: AnamnesisCardProps) {
         })
       }
     }
-  }, [patientData?.anamnesisId])
+  }, [])
 
   function handleSetValueForm(anamnesisData: PatientAnamnesisData) {
-    form.setValue(
-      'allergy',
-      anamnesisData?.allergy ? anamnesisData.allergy : '',
-    )
-    form.setValue(
-      'consumeDrug',
-      anamnesisData?.consumeDrug ? anamnesisData.consumeDrug : '',
-    )
-    form.setValue(
-      'dailyRoutine',
-      anamnesisData?.dailyRoutine ? anamnesisData.dailyRoutine : '',
-    )
-    form.setValue(
-      'diseaseHistory',
-      anamnesisData?.diseaseHistory ? anamnesisData.diseaseHistory : '',
-    )
-    form.setValue(
-      'emotionalState',
-      anamnesisData?.emotionalState ? anamnesisData.emotionalState : '',
-    )
-    form.setValue(
-      'medicalHistory',
-      anamnesisData?.medicalHistory ? anamnesisData.medicalHistory : '',
-    )
-    form.setValue(
-      'takingMedication',
-      anamnesisData?.takingMedication ? anamnesisData.takingMedication : '',
-    )
-    form.setValue('reason', anamnesisData?.reason ? anamnesisData.reason : '')
-    form.setValue(
-      'symptoms',
-      anamnesisData?.symptoms ? anamnesisData.symptoms : '',
-    )
+    form.reset({
+      ...anamnesisData,
+    })
   }
 
-  async function handleAnamnesisPatient(
+  async function handleSubmitAnamnesisPatient(
     patientAnamnesisData: UpdatePatientAnamnesisFormData,
   ) {
-    if (patientData?.anamnesisId !== undefined) {
+    if (patientData?.anamnesisId) {
       await updateAnamnesisPatient(
-        patientData?.anamnesisId as string,
+        String(patientData?.anamnesisId),
         patientAnamnesisData,
       )
     } else {
@@ -171,26 +141,20 @@ export function AnamnesisCard({ patientData }: AnamnesisCardProps) {
     }
   }
 
+  function handleGoBack() {
+    navigate('/patient')
+  }
+
   return (
     <>
       {isLoading ? (
-        <div className="w-10/12 flex flex-col gap-6 mt-8">
-          <Skeleton className="w-[20%] h-[25px]" />
-          <Skeleton className="w-[100%] h-[50px]" />
-          <Skeleton className="w-[20%] h-[25px]" />
-          <Skeleton className="w-[100%] h-[50px]" />
-          <Skeleton className="w-[20%] h-[25px]" />
-          <Skeleton className="w-[100%] h-[50px]" />
-          <Skeleton className="w-[20%] h-[25px]" />
-          <Skeleton className="w-[100%] h-[50px]" />
-          <Skeleton className="w-[20%] h-[25px]" />
-          <Skeleton className="w-[100%] h-[50px]" />
-          <Skeleton className="w-[20%] h-[25px]" />
-          <Skeleton className="w-[100%] h-[50px]" />
-          <Skeleton className="w-[20%] h-[25px]" />
-          <Skeleton className="w-[100%] h-[50px]" />
-          <Skeleton className="w-[20%] h-[25px]" />
-          <Skeleton className="w-[100%] h-[50px]" />
+        <div className="w-[100%] flex flex-col gap-6 mt-8">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <div key={index}>
+              <Skeleton className="w-[20%] h-[25px] my-6" />
+              <Skeleton className="w-[100%] h-[50px]" />
+            </div>
+          ))}
           <div className="flex gap-6">
             <Skeleton className="w-[100%] h-[30px]" />
             <Skeleton className="w-[100%] h-[30px]" />
@@ -202,14 +166,14 @@ export function AnamnesisCard({ patientData }: AnamnesisCardProps) {
             form={form}
             inputList={inputList}
             className="w-[100%] flex flex-col gap-6"
-            onSubmit={form.handleSubmit(handleAnamnesisPatient)}
+            onSubmit={form.handleSubmit(handleSubmitAnamnesisPatient)}
           >
             <div className="flex gap-6 mt-6 w-[100%]">
               <Button
                 className="w-[100%]"
                 variant="outline"
                 type="button"
-                onClick={() => {}}
+                onClick={handleGoBack}
               >
                 Voltar
               </Button>

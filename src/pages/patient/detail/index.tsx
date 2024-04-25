@@ -19,10 +19,11 @@ export function DetailPatient() {
 
   useMemo(async () => {
     try {
-      if (!patientId) return
-      setIsLoading(true)
-      setPatientData(await patientById(patientId))
-      setIsLoading(false)
+      if (patientId) {
+        setIsLoading(true)
+        setPatientData(await patientById(patientId))
+        setIsLoading(false)
+      }
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -34,9 +35,9 @@ export function DetailPatient() {
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold">Adicionar Paciente</h1>
+      <h1 className="text-3xl font-bold">Detalhes do Paciente</h1>
 
-      <div className="flex flex-col w-[100%] border rounded-lg p-8 mt-8 flex items-center justify-center">
+      <div className="flex flex-col w-[100%] border rounded-lg p-8 mt-8 items-center justify-center">
         <Tabs value={tabValue} className="w-[100%]">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger
@@ -59,7 +60,7 @@ export function DetailPatient() {
           >
             <PatientCard
               patientData={patientData}
-              isLoadingpatient={isLoading}
+              isLoadingPatient={isLoading}
             />
           </TabsContent>
           <TabsContent value="anamnesisDetail">

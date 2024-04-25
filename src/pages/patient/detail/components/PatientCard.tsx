@@ -4,21 +4,20 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { patientSchema, updateUserFormSchema } from '@/utils/schemas'
 import { PatientData, UpdatePatientFormData } from '@/utils/types'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
 interface PatientCardProps {
   patientData?: PatientData
-  isLoadingpatient: boolean
+  isLoadingPatient: boolean
 }
 
 export function PatientCard({
   patientData,
-  isLoadingpatient,
+  isLoadingPatient,
 }: PatientCardProps) {
   const navigate = useNavigate()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
   const form = useForm<UpdatePatientFormData>({
     resolver: zodResolver(updateUserFormSchema),
     defaultValues: {
@@ -48,9 +47,7 @@ export function PatientCard({
   ]
 
   useMemo(async () => {
-    setIsLoading(isLoadingpatient)
-    if (!patientData) return
-    handleSetValueForm(patientSchema.parse(patientData))
+    if (patientData) handleSetValueForm(patientSchema.parse(patientData))
   }, [patientData])
 
   function handleSetValueForm(patientData: PatientData) {
@@ -69,7 +66,7 @@ export function PatientCard({
 
   return (
     <>
-      {isLoading ? (
+      {isLoadingPatient ? (
         <div className="w-96 flex flex-col gap-6 mt-8">
           <Skeleton className="w-[20%] h-[25px]" />
           <Skeleton className="w-[100%] h-[25px]" />
