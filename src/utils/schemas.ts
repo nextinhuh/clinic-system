@@ -109,6 +109,8 @@ export const updatePatientFormSchema = z.object({
     .email({ message: 'E-mail inválido' }),
 })
 
+// ANAMNESIS
+
 export const patientAnamnesisSchema = z.object({
   id: z.string(),
   reason: z.string(),
@@ -170,4 +172,24 @@ export const updatePatientAnamnesisFormSchema = z.object({
       message: 'O campo estado emocional não pode ser vazio',
     }),
   patientId: z.string({ required_error: 'Estado emocional é obrigatório' }),
+})
+
+// SCHEDULE
+
+export const scheduleAppointmentSchema = z.object({
+  id: z.string(),
+  date: z.date(),
+  consult_id: z.string(),
+  patientId: z.string(),
+  doctorId: z.string()
+})
+
+export const createScheduleAppointmentFormSchema = z.object({
+  date: z.object({
+    startDate: z.coerce.date().refine((data) => data > new Date(), { message: "A data da consulta deve ser maior que a atual" }),
+    endDate: z.coerce.date(),
+  }).refine((data) => data.endDate > data.startDate, {
+    message: "Esta data é invalida!",
+    path: ["endDate"],
+  })
 })
