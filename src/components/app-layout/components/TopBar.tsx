@@ -13,7 +13,7 @@ export function TopBar({
 }: TopBarProps) {
   return (
     <header className="flex items-center justify-between w-[100%] border-b-[1px] border-white mt-4 pb-5">
-      <div className="flex w-[100%] sm:w-[30rem] sm:gap-10">
+      <div className="flex w-[100%] sm:w-[40rem] sm:gap-10">
         <IoMdMenu
           size={24}
           onClick={openSheetNavMenu}
