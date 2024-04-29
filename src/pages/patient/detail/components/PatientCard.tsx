@@ -1,6 +1,7 @@
 import { FormController } from '@/components/form-controller'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { updatePatient } from '@/service/patient.service'
 import { patientSchema, updateUserFormSchema } from '@/utils/schemas'
 import { PatientData, UpdatePatientFormData } from '@/utils/types'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -45,7 +46,6 @@ export function PatientCard({
       type: 'number',
     },
   ]
-
   useMemo(async () => {
     if (patientData) handleSetValueForm(patientSchema.parse(patientData))
   }, [patientData])
@@ -60,8 +60,8 @@ export function PatientCard({
     navigate('/patient')
   }
 
-  async function handleUpdatePatient(patientData: UpdatePatientFormData) {
-    console.log(patientData)
+  async function handleUpdatePatient(patientDataForm: UpdatePatientFormData) {
+    await updatePatient(String(patientData?.id), patientDataForm)
   }
 
   return (
