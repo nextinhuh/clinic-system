@@ -181,15 +181,19 @@ export const scheduleAppointmentSchema = z.object({
   date: z.date(),
   consult_id: z.string(),
   patientId: z.string(),
-  doctorId: z.string()
+  doctorId: z.string(),
 })
 
 export const createScheduleAppointmentFormSchema = z.object({
-  date: z.object({
-    startDate: z.coerce.date().refine((data) => data > new Date(), { message: "A data da consulta deve ser maior que a atual" }),
-    endDate: z.coerce.date(),
-  }).refine((data) => data.endDate > data.startDate, {
-    message: "Esta data é invalida!",
-    path: ["endDate"],
-  })
+  date: z
+    .object({
+      startDate: z.coerce.date().refine((data) => data > new Date(), {
+        message: 'A data da consulta deve ser maior que a atual',
+      }),
+      endDate: z.coerce.date(),
+    })
+    .refine((data) => data.endDate > data.startDate, {
+      message: 'Esta data é invalida!',
+      path: ['endDate'],
+    }),
 })

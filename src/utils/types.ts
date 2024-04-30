@@ -10,6 +10,7 @@ import {
   updatePatientFormSchema,
   patientAnamnesisSchema,
   updatePatientAnamnesisFormSchema,
+  scheduleAppointmentSchema,
 } from './schemas'
 
 export type UserData = z.infer<typeof userSchema>
@@ -21,6 +22,9 @@ export type PatientData = z.infer<typeof patientSchema>
 export type CreatePatientFormData = z.infer<typeof createPatientFormSchema>
 export type UpdatePatientFormData = z.infer<typeof updatePatientFormSchema>
 export type PatientAnamnesisData = z.infer<typeof patientAnamnesisSchema>
+export type ScheduleAppointmentSchemaData = z.infer<
+  typeof scheduleAppointmentSchema
+>
 export type UpdatePatientAnamnesisFormData = z.infer<
   typeof updatePatientAnamnesisFormSchema
 >
