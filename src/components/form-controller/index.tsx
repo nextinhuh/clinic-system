@@ -10,6 +10,18 @@ import {
 } from '../ui/form'
 import { Input } from '../ui/input'
 import { Textarea } from '../ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select'
+
+interface IOptions {
+  id: string
+  name: string | number
+}
 
 interface InputListProps {
   name: string
@@ -17,6 +29,7 @@ interface InputListProps {
   label: string
   placeholder?: string
   formItemClassName?: string
+  options?: IOptions[]
 }
 
 interface FormControllerProps {
@@ -25,6 +38,40 @@ interface FormControllerProps {
   children?: React.ReactNode
   className?: string
   inputList?: InputListProps[]
+}
+
+function renderInput(
+  type: string | undefined,
+  placeholder?: string,
+  field?: any,
+  options?: IOptions[],
+) {
+  switch (type) {
+    case 'textarea':
+      return <Textarea placeholder={placeholder} {...field} />
+    case 'select':
+      return (
+        <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue placeholder={placeholder} />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            {options !== undefined &&
+              options?.map((option) => (
+                <SelectItem key={option.id} value={option.id}>
+                  {option.name}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
+      )
+    default:
+      return (
+        <Input type={type || 'text'} placeholder={placeholder} {...field} />
+      )
+  }
 }
 
 export function FormController({
@@ -50,14 +97,11 @@ export function FormController({
               >
                 <FormLabel>{input.label}</FormLabel>
                 <FormControl>
-                  {input.type && input.type === 'textarea' ? (
-                    <Textarea placeholder={input.placeholder} {...field} />
-                  ) : (
-                    <Input
-                      type={input.type ? input.type : 'text'}
-                      placeholder={input.placeholder}
-                      {...field}
-                    />
+                  {renderInput(
+                    input.type,
+                    input.placeholder,
+                    field,
+                    input.options,
                   )}
                 </FormControl>
                 <FormMessage />

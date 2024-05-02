@@ -2,6 +2,7 @@ import { Patient } from '@/pages/patient'
 import { CreatePatient } from '@/pages/patient/create'
 import { DetailPatient } from '@/pages/patient/detail'
 import { Schedule } from '@/pages/schedule'
+import { CreateSchedule } from '@/pages/schedule/create'
 
 export const PatientRoutes = [
   {
@@ -18,6 +19,10 @@ export const PatientRoutes = [
   },
   {
     path: 'schedule',
-    element: <Schedule />
-  }
+    element: <Schedule />,
+  },
+  {
+    path: 'schedule/create',
+    element: <CreateSchedule />,
+  },
 ]

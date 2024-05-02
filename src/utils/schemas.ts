@@ -185,6 +185,13 @@ export const scheduleAppointmentSchema = z.object({
 })
 
 export const createScheduleAppointmentFormSchema = z.object({
+  patientId: z
+    .string({
+      required_error: 'Por favor selecione um paciente',
+    })
+    .refine((data) => data.trim() !== '', {
+      message: 'Selecione um paciente',
+    }),
   date: z
     .object({
       startDate: z.coerce.date().refine((data) => data > new Date(), {
