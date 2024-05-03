@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/table'
 import { getActualDate } from '@/utils/parse'
 import { ScheduleAppointmentSchemaData } from '@/utils/types'
+import { format } from 'date-fns'
 import { useMemo, useState } from 'react'
 import { BsLayoutTextWindow } from 'react-icons/bs'
 import { IoCheckmarkCircleOutline, IoCloseCircleOutline } from 'react-icons/io5'
@@ -64,9 +65,11 @@ export const Schedule = () => {
                 return (
                   <TableRow key={schedule.id}>
                     <TableCell className="font-medium text-center">
-                      {schedule.id}
+                      {schedule.name}
                     </TableCell>
-                    <TableCell className="text-center">{schedule.id}</TableCell>
+                    <TableCell className="text-center">
+                      {format(schedule.date, 'dd/MM/yyyy HH:mm:ss')}
+                    </TableCell>
                     <TableCell className="text-center">
                       {schedule.id === '' ? (
                         <Badge
