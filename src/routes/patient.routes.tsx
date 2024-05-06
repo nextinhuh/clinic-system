@@ -17,7 +17,7 @@ export const PatientRoutes = [
     element: <DetailPatient />,
   },
   {
-    path: 'schedule',
+    path: '/schedule',
     element: <Schedule />,
   },
 ]

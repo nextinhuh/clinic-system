@@ -26,17 +26,6 @@ export function NavMenu() {
         PACIENTES
       </NavLink>
       <NavLink
-        to="/appointment"
-        className={({ isActive }) =>
-          (isActive
-            ? 'text-white'
-            : 'text-slate-400 hover:text-white duration-100') +
-          ' text-base font-bold cursor-pointer '
-        }
-      >
-        CONSULTAS
-      </NavLink>
-      <NavLink
         to="/schedule"
         className={({ isActive }) =>
           (isActive

@@ -1,7 +1,5 @@
 import { z } from 'zod'
 
-// USER
-
 export const userSchema = z
   .object({
     id: z.string().nullable(),
@@ -63,8 +61,6 @@ export const getFirebaseUserSchema = z.object({
     .nullable(),
 })
 
-// PACIENT
-
 export const patientSchema = z.object({
   id: z.string().nullable(),
   age: z.number().nullable(),
@@ -108,8 +104,6 @@ export const updatePatientFormSchema = z.object({
     .string({ required_error: 'E-mail é obrigatório' })
     .email({ message: 'E-mail inválido' }),
 })
-
-// ANAMNESIS
 
 export const patientAnamnesisSchema = z.object({
   id: z.string(),
@@ -174,14 +168,14 @@ export const updatePatientAnamnesisFormSchema = z.object({
   patientId: z.string({ required_error: 'Estado emocional é obrigatório' }),
 })
 
-// SCHEDULE
-
 export const scheduleAppointmentSchema = z.object({
   id: z.string(),
   date: z.date(),
-  consult_id: z.string(),
-  patientId: z.string(),
+  name: z.string(),
   doctorId: z.string(),
+  patientId: z.string(),
+  consult_id: z.string(),
+  hasConfirm: z.boolean(),
 })
 
 export const createScheduleAppointmentFormSchema = z.object({
@@ -192,15 +186,9 @@ export const createScheduleAppointmentFormSchema = z.object({
     .refine((data) => data.trim() !== '', {
       message: 'Selecione um paciente',
     }),
-  date: z
-    .object({
-      startDate: z.coerce.date().refine((data) => data > new Date(), {
-        message: 'A data da consulta deve ser maior que a atual',
-      }),
-      endDate: z.coerce.date(),
-    })
-    .refine((data) => data.endDate > data.startDate, {
-      message: 'Esta data é invalida!',
-      path: ['endDate'],
+  date: z.object({
+    datePicker: z.coerce.date().refine((data) => data > new Date(), {
+      message: 'A data da consulta deve ser maior que a atual',
     }),
+  }),
 })

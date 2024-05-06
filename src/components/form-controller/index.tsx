@@ -32,6 +32,8 @@ interface InputListProps {
   options?: IOptions[]
 }
 
+type InputType = 'text' | 'textarea' | 'select' | 'email' | 'password'
+
 interface FormControllerProps {
   form: UseFormReturn<any>
   onSubmit: () => Promise<any>
@@ -41,7 +43,7 @@ interface FormControllerProps {
 }
 
 function renderInput(
-  type: string | undefined,
+  type?: InputType,
   placeholder?: string,
   field?: any,
   options?: IOptions[],
@@ -59,8 +61,8 @@ function renderInput(
           </FormControl>
           <SelectContent>
             {options !== undefined &&
-              options?.map((option) => (
-                <SelectItem key={option.id} value={option.id}>
+              options?.map((option, index) => (
+                <SelectItem key={option.id + index} value={option.id}>
                   {option.name}
                 </SelectItem>
               ))}
@@ -98,7 +100,7 @@ export function FormController({
                 <FormLabel>{input.label}</FormLabel>
                 <FormControl>
                   {renderInput(
-                    input.type,
+                    input.type as InputType,
                     input.placeholder,
                     field,
                     input.options,
