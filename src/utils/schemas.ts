@@ -1,7 +1,5 @@
 import { z } from 'zod'
 
-// USER
-
 export const userSchema = z
   .object({
     id: z.string().nullable(),
@@ -62,8 +60,6 @@ export const getFirebaseUserSchema = z.object({
     })
     .nullable(),
 })
-
-// PACIENT
 
 export const patientSchema = z.object({
   id: z.string().nullable(),
@@ -170,4 +166,29 @@ export const updatePatientAnamnesisFormSchema = z.object({
       message: 'O campo estado emocional não pode ser vazio',
     }),
   patientId: z.string({ required_error: 'Estado emocional é obrigatório' }),
+})
+
+export const scheduleAppointmentSchema = z.object({
+  id: z.string(),
+  date: z.date(),
+  name: z.string(),
+  doctorId: z.string(),
+  patientId: z.string(),
+  consult_id: z.string(),
+  hasConfirm: z.boolean(),
+})
+
+export const createScheduleAppointmentFormSchema = z.object({
+  patientId: z
+    .string({
+      required_error: 'Por favor selecione um paciente',
+    })
+    .refine((data) => data.trim() !== '', {
+      message: 'Selecione um paciente',
+    }),
+  date: z.object({
+    datePicker: z.coerce.date().refine((data) => data > new Date(), {
+      message: 'A data da consulta deve ser maior que a atual',
+    }),
+  }),
 })

@@ -26,7 +26,7 @@ export function NavMenu() {
         PACIENTES
       </NavLink>
       <NavLink
-        to="/appointment"
+        to="/schedule"
         className={({ isActive }) =>
           (isActive
             ? 'text-white'
@@ -34,7 +34,7 @@ export function NavMenu() {
           ' text-base font-bold cursor-pointer '
         }
       >
-        CONSULTAS
+        AGENDAMENTO
       </NavLink>
     </div>
   )

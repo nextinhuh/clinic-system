@@ -1,6 +1,7 @@
 import { Patient } from '@/pages/patient'
 import { CreatePatient } from '@/pages/patient/create'
 import { DetailPatient } from '@/pages/patient/detail'
+import { Schedule } from '@/pages/schedule'
 
 export const PatientRoutes = [
   {
@@ -14,5 +15,9 @@ export const PatientRoutes = [
   {
     path: '/patient/:patientId',
     element: <DetailPatient />,
+  },
+  {
+    path: '/schedule',
+    element: <Schedule />,
   },
 ]
