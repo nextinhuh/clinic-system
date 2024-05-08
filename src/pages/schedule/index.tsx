@@ -1,5 +1,4 @@
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
@@ -16,6 +15,7 @@ import { useMemo, useState } from 'react'
 import { BsLayoutTextWindow } from 'react-icons/bs'
 import { IoCheckmarkCircleOutline, IoCloseCircleOutline } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
+import { CreateScheduleDialog } from './create-schedule-dialog'
 
 export const Schedule = () => {
   const navigate = useNavigate()
@@ -23,9 +23,9 @@ export const Schedule = () => {
     ScheduleAppointmentSchemaData[]
   >([])
 
-  function handleCreateSchedule() {
-    navigate('/schedule/create')
-  }
+  // function handleCreateSchedule() {
+  //   navigate('/schedule/create')
+  // }
 
   function handleDetailSchedule(scheduleId: string | null) {
     navigate(`/schedules/${scheduleId}`)
@@ -46,9 +46,7 @@ export const Schedule = () => {
       <div className="w-[100%] border rounded-lg p-8 mt-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-bold mb-4">Lista de agendamentos</h1>
-          <Button onClick={handleCreateSchedule} variant="outline">
-            Novo agendamnto
-          </Button>
+          <CreateScheduleDialog />
         </div>
         <Table>
           <TableHeader>
