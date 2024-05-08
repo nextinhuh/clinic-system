@@ -2,6 +2,7 @@ import { FormController } from '@/components/form-controller'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -96,15 +97,16 @@ export const CreateScheduleDialog = () => {
             onSubmit={form.handleSubmit(handleCreateSchedule)}
           >
             <div className="flex gap-6 mt-6 w-[100%]">
-              <Button
-                className="w-[100%]"
-                variant="outline"
-                type="button"
-                onClick={() => {}}
-              >
-                Voltar
-              </Button>
-
+              <DialogClose asChild>
+                <Button
+                  className="w-[100%]"
+                  variant="outline"
+                  type="button"
+                  onClick={() => {}}
+                >
+                  Voltar
+                </Button>
+              </DialogClose>
               <Button
                 className="w-[100%]"
                 variant="default"
