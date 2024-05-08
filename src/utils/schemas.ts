@@ -186,6 +186,9 @@ export const createScheduleAppointmentFormSchema = z.object({
     .refine((data) => data.trim() !== '', {
       message: 'Selecione um paciente',
     }),
+  patientName: z.string(),
+  doctorId: z.string(),
+  hasConfirm: z.boolean(),
   date: z.coerce.date().refine((data) => data >= new Date(), {
     message: 'A data da consulta deve ser maior que a atual',
   }),
