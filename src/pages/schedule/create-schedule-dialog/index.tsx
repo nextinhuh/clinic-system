@@ -7,7 +7,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { allPatient } from '@/service/patient.service'
+import { toast } from '@/components/ui/use-toast'
+import { useAuth } from '@/hook/Auth'
+import { allPatient, createSchedule } from '@/service/patient.service'
 import { createScheduleAppointmentFormSchema } from '@/utils/schemas'
 import { CreateScheduleAppointmentFormSchema, PatientData } from '@/utils/types'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -16,11 +18,15 @@ import { useForm } from 'react-hook-form'
 
 export const CreateScheduleDialog = () => {
   const [allPatients, setAllPatients] = useState<PatientData[]>()
+  const { user } = useAuth()
   const form = useForm<CreateScheduleAppointmentFormSchema>({
     resolver: zodResolver(createScheduleAppointmentFormSchema),
     defaultValues: {
       date: new Date(),
       patientId: '',
+      patientName: '',
+      doctorId: '',
+      hasConfirm: false,
     },
   })
   const inputList = [
@@ -44,10 +50,33 @@ export const CreateScheduleDialog = () => {
     } catch (error) {}
   }, [])
 
-  function handleCreateSchedule(
+  async function handleCreateSchedule(
     scheduleData: CreateScheduleAppointmentFormSchema,
   ) {
-    console.log(scheduleData)
+    const patientData = allPatients?.find(
+      (patient) => patient.id === scheduleData.patientId,
+    )
+
+    scheduleData = {
+      ...scheduleData,
+      doctorId: user?.email || '',
+      patientName: patientData?.name || '',
+    }
+
+    try {
+      await createSchedule(scheduleData)
+      toast({
+        variant: 'success',
+        title: 'Agendamento realizado com sucesso!',
+        duration: 3000, // 3 SECONDS
+      })
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Não foi possivel realizar o agendamneto',
+        duration: 3000, // 3 SECONDS
+      })
+    }
   }
   return (
     <Dialog>
