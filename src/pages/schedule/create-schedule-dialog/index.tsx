@@ -88,7 +88,7 @@ export const CreateScheduleDialog = forwardRef<
 
     scheduleData = {
       ...scheduleData,
-      doctorId: user?.email || '',
+      doctorId: user?.id || '',
       patientName: patientData?.name || '',
     }
 
