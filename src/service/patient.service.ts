@@ -14,17 +14,24 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  query,
   updateDoc,
+  where,
 } from 'firebase/firestore'
 
 const PATIENT_FIRESTORE_KEY = 'patients'
 const ANAMNESIS_FIRESTORE_KEY = 'anamnesis'
 
-export async function allPatient(): Promise<PatientData[]> {
+export async function allPatient(doctorId: string): Promise<PatientData[]> {
   const patientList: PatientData[] = []
   const db = getFirestore()
 
-  const querySnapshot = await getDocs(collection(db, PATIENT_FIRESTORE_KEY))
+  const q = query(
+    collection(db, PATIENT_FIRESTORE_KEY),
+    where('doctorId', '==', doctorId),
+  )
+
+  const querySnapshot = await getDocs(q)
 
   querySnapshot.forEach((doc) => {
     const patient = patientSchema.parse({

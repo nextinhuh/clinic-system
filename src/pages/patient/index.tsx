@@ -16,9 +16,11 @@ import { useNavigate } from 'react-router-dom'
 import { IoCloseCircleOutline, IoCheckmarkCircleOutline } from 'react-icons/io5'
 import { BsLayoutTextWindow } from 'react-icons/bs'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useAuth } from '@/hook/Auth'
 
 export function Patient() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [patientList, setPatientList] = useState<PatientData[]>([])
 
   function handleCreatePatient() {
@@ -30,7 +32,7 @@ export function Patient() {
   }
 
   useMemo(async () => {
-    setPatientList(await allPatient())
+    setPatientList(await allPatient(user.id))
   }, [])
 
   return (

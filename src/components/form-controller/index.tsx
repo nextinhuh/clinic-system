@@ -17,10 +17,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select'
+import { Button } from '../ui/button'
+import { CalendarIcon } from '@radix-ui/react-icons'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
+import { cn } from '@/utils/tw-merge'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
+import { Calendar } from '../ui/calendar'
 
 interface IOptions {
-  id: string
-  name: string | number
+  value: string | number
+  label: string
 }
 
 interface InputListProps {
@@ -32,7 +39,13 @@ interface InputListProps {
   options?: IOptions[]
 }
 
-type InputType = 'text' | 'textarea' | 'select' | 'email' | 'password'
+type InputType =
+  | 'text'
+  | 'textarea'
+  | 'select'
+  | 'email'
+  | 'password'
+  | 'calendar'
 
 interface FormControllerProps {
   form: UseFormReturn<any>
@@ -61,13 +74,48 @@ function renderInput(
           </FormControl>
           <SelectContent>
             {options !== undefined &&
-              options?.map((option, index) => (
-                <SelectItem key={option.id + index} value={option.id}>
-                  {option.name}
+              options?.map((option) => (
+                <SelectItem
+                  key={String(option.value)}
+                  value={String(option.value)}
+                >
+                  {option.label}
                 </SelectItem>
               ))}
           </SelectContent>
         </Select>
+      )
+    case 'calendar':
+      return (
+        <Popover>
+          <PopoverTrigger asChild>
+            <FormControl>
+              <Button
+                variant={'outline'}
+                className={cn(
+                  'w-full pl-3 text-left font-normal',
+                  !field.value && 'text-muted-foreground',
+                )}
+              >
+                {field.value ? (
+                  format(field.value, 'PPPP', { locale: ptBR })
+                ) : (
+                  <span>{placeholder}</span>
+                )}
+                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+              </Button>
+            </FormControl>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={field.value}
+              onSelect={field.onChange}
+              disabled={(date) => date < new Date()}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
       )
     default:
       return (
@@ -97,8 +145,8 @@ export function FormController({
                   input.formItemClassName ? input.formItemClassName : 'w-[100%]'
                 }
               >
-                <FormLabel>{input.label}</FormLabel>
-                <FormControl>
+                <FormLabel className="mr-2">{input.label}</FormLabel>
+                <FormControl className="">
                   {renderInput(
                     input.type as InputType,
                     input.placeholder,
