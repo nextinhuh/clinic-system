@@ -167,10 +167,10 @@ export const updatePatientAnamnesisFormSchema = z.object({
 export const scheduleAppointmentSchema = z.object({
   id: z.string(),
   date: z.date(),
-  name: z.string(),
+  patientName: z.string(),
   doctorId: z.string(),
   patientId: z.string(),
-  consult_id: z.string(),
+  consultId: z.string(),
   hasConfirm: z.boolean(),
 })
 

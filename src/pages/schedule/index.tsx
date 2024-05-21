@@ -70,7 +70,7 @@ export const Schedule = () => {
                 return (
                   <TableRow key={schedule.id}>
                     <TableCell className="font-medium text-center">
-                      {schedule.name}
+                      {schedule.patientName}
                     </TableCell>
                     <TableCell className="text-center">
                       {format(schedule.date, 'dd/MM/yyyy HH:mm:ss')}
