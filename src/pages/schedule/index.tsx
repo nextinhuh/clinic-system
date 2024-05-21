@@ -113,8 +113,9 @@ export const Schedule = () => {
                   <TableCell>
                     <Skeleton className="w-[80%] h-[20px] ml-8 rounded-xl" />
                   </TableCell>
-                  <TableCell>
-                    <Skeleton className="w-[80%] h-[20px] ml-8 rounded-xl" />
+                  <TableCell className="flex justify-center">
+                    <Skeleton className="w-[10%] h-[20px] mx-4 rounded-xl" />
+                    <Skeleton className="w-[10%] h-[20px] mx-4 rounded-xl" />
                   </TableCell>
                 </TableRow>
               ))}
