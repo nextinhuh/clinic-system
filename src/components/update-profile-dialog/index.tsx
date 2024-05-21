@@ -85,13 +85,13 @@ export const UpdateProfileDialog = forwardRef<
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleUpdateUserProfile)}
-            className="flex flex-col gap-3 mt-8 items-center w-[100%]"
+            className="flex flex-col gap-5 mt-8 items-center w-full"
           >
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem className="w-[100%]">
+                <FormItem className="w-full">
                   <FormLabel>E-mail</FormLabel>
                   <FormControl>
                     <Input placeholder="E-mail" {...field} disabled />
@@ -105,7 +105,7 @@ export const UpdateProfileDialog = forwardRef<
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem className="w-[100%]">
+                <FormItem className="w-full">
                   <FormLabel>Nome de exibição</FormLabel>
                   <FormControl>
                     <Input placeholder="Nome" {...field} />
@@ -119,7 +119,7 @@ export const UpdateProfileDialog = forwardRef<
               control={form.control}
               name="photoURL"
               render={({ field }) => (
-                <FormItem className="w-[100%]">
+                <FormItem className="w-full">
                   <FormLabel>Avatar URL</FormLabel>
                   <FormControl>
                     <Input placeholder="https://" {...field} />

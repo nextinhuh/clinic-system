@@ -20,13 +20,14 @@ import {
 import { Button } from '../ui/button'
 import { CalendarIcon } from '@radix-ui/react-icons'
 import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import { cn } from '@/utils/tw-merge'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Calendar } from '../ui/calendar'
 
 interface IOptions {
-  id: string
-  name: string | number
+  value: string | number
+  label: string
 }
 
 interface InputListProps {
@@ -73,9 +74,12 @@ function renderInput(
           </FormControl>
           <SelectContent>
             {options !== undefined &&
-              options?.map((option, index) => (
-                <SelectItem key={option.id + index} value={option.id}>
-                  {option.name}
+              options?.map((option) => (
+                <SelectItem
+                  key={String(option.value)}
+                  value={String(option.value)}
+                >
+                  {option.label}
                 </SelectItem>
               ))}
           </SelectContent>
@@ -89,12 +93,12 @@ function renderInput(
               <Button
                 variant={'outline'}
                 className={cn(
-                  'w-[240px] pl-3 text-left font-normal',
+                  'w-full pl-3 text-left font-normal',
                   !field.value && 'text-muted-foreground',
                 )}
               >
                 {field.value ? (
-                  format(field.value, 'PPP')
+                  format(field.value, 'PPPP', { locale: ptBR })
                 ) : (
                   <span>{placeholder}</span>
                 )}
@@ -142,7 +146,7 @@ export function FormController({
                 }
               >
                 <FormLabel className="mr-2">{input.label}</FormLabel>
-                <FormControl>
+                <FormControl className="">
                   {renderInput(
                     input.type as InputType,
                     input.placeholder,

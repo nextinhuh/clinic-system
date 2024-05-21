@@ -11,21 +11,22 @@ import {
 import { getActualDate } from '@/utils/parse'
 import { ScheduleAppointmentSchemaData } from '@/utils/types'
 import { format } from 'date-fns'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { BsLayoutTextWindow } from 'react-icons/bs'
 import { IoCheckmarkCircleOutline, IoCloseCircleOutline } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
-import { CreateScheduleDialog } from './create-schedule-dialog'
+import {
+  CreateScheduleDialog,
+  CreateScheduleDialogRef,
+} from './create-schedule-dialog'
+import { Button } from '@/components/ui/button'
 
 export const Schedule = () => {
   const navigate = useNavigate()
+  const createScheduleDialogRef = useRef<CreateScheduleDialogRef>(null)
   const [schedulesList, setSchedulesList] = useState<
     ScheduleAppointmentSchemaData[]
   >([])
-
-  // function handleCreateSchedule() {
-  //   navigate('/schedule/create')
-  // }
 
   function handleDetailSchedule(scheduleId: string | null) {
     navigate(`/schedules/${scheduleId}`)
@@ -37,6 +38,7 @@ export const Schedule = () => {
 
   return (
     <div className="p-8">
+      <CreateScheduleDialog ref={createScheduleDialogRef} />
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Agendamentos</h1>
         <p className="text-[10px] mt-2 sm:text-xs sm:mt-0">
@@ -46,7 +48,12 @@ export const Schedule = () => {
       <div className="w-[100%] border rounded-lg p-8 mt-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-bold mb-4">Lista de agendamentos</h1>
-          <CreateScheduleDialog />
+          <Button
+            onClick={() => createScheduleDialogRef.current?.handleOpenDialog()}
+            variant="outline"
+          >
+            Novo agendamento
+          </Button>
         </div>
         <Table>
           <TableHeader>

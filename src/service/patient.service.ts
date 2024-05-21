@@ -2,7 +2,6 @@ import { toast } from '@/components/ui/use-toast'
 import { patientAnamnesisSchema, patientSchema } from '@/utils/schemas'
 import {
   CreatePatientFormData,
-  CreateScheduleAppointmentFormSchema,
   PatientAnamnesisData,
   PatientData,
   UpdatePatientAnamnesisFormData,
@@ -15,18 +14,24 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  query,
   updateDoc,
+  where,
 } from 'firebase/firestore'
 
 const PATIENT_FIRESTORE_KEY = 'patients'
 const ANAMNESIS_FIRESTORE_KEY = 'anamnesis'
-const SCHEDULES_FIRESTORE_KEY = 'schedules'
 
-export async function allPatient(): Promise<PatientData[]> {
+export async function allPatient(doctorId: string): Promise<PatientData[]> {
   const patientList: PatientData[] = []
   const db = getFirestore()
 
-  const querySnapshot = await getDocs(collection(db, PATIENT_FIRESTORE_KEY))
+  const q = query(
+    collection(db, PATIENT_FIRESTORE_KEY),
+    where('doctorId', '==', doctorId),
+  )
+
+  const querySnapshot = await getDocs(q)
 
   querySnapshot.forEach((doc) => {
     const patient = patientSchema.parse({
@@ -149,16 +154,4 @@ export async function updateAnamnesisPatient(
         duration: 3000, // 3 SECONDS
       })
     })
-}
-
-export async function createSchedule(
-  scheduleData: CreateScheduleAppointmentFormSchema,
-) {
-  const db = getFirestore()
-
-  await addDoc(collection(db, SCHEDULES_FIRESTORE_KEY), scheduleData).catch(
-    (error) => {
-      throw new Error(error.message)
-    },
-  )
 }

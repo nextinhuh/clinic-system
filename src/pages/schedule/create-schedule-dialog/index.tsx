@@ -1,25 +1,39 @@
-import { FormController } from '@/components/form-controller'
-import { Button } from '@/components/ui/button'
+import { forwardRef, useImperativeHandle, useMemo, useState } from 'react'
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
-import { toast } from '@/components/ui/use-toast'
 import { useAuth } from '@/hook/Auth'
-import { allPatient, createSchedule } from '@/service/patient.service'
+import { useForm } from 'react-hook-form'
+import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/use-toast'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { allPatient } from '@/service/patient.service'
+import { createSchedule } from '@/service/schedule.service'
+import { FormController } from '@/components/form-controller'
 import { createScheduleAppointmentFormSchema } from '@/utils/schemas'
 import { CreateScheduleAppointmentFormSchema, PatientData } from '@/utils/types'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
 
-export const CreateScheduleDialog = () => {
-  const [allPatients, setAllPatients] = useState<PatientData[]>()
+interface CreateScheduleDialogProps {
+  isOpen?: boolean
+}
+
+export interface CreateScheduleDialogRef {
+  handleOpenDialog: () => void
+  handleCloseDialog: () => void
+}
+
+// eslint-disable-next-line react/display-name
+export const CreateScheduleDialog = forwardRef<
+  CreateScheduleDialogRef,
+  CreateScheduleDialogProps
+>(({ isOpen = false }: CreateScheduleDialogProps, ref) => {
+  const { toast } = useToast()
   const { user } = useAuth()
+  const [open, setOpen] = useState(isOpen)
+  const [allPatients, setAllPatients] = useState<PatientData[]>()
   const form = useForm<CreateScheduleAppointmentFormSchema>({
     resolver: zodResolver(createScheduleAppointmentFormSchema),
     defaultValues: {
@@ -42,14 +56,28 @@ export const CreateScheduleDialog = () => {
       label: 'Paciente',
       placeholder: 'Selecione um paciente',
       type: 'select',
-      options: allPatients,
+      options: allPatients?.map((patient) => {
+        return {
+          label: patient.name,
+          value: patient.id,
+        }
+      }),
     },
   ]
   useMemo(async () => {
     try {
-      setAllPatients(await allPatient())
+      setAllPatients(await allPatient(user?.id))
     } catch (error) {}
   }, [])
+
+  useImperativeHandle(ref, () => ({
+    handleOpenDialog(): void {
+      setOpen(true)
+    },
+    handleCloseDialog(): void {
+      setOpen(false)
+    },
+  }))
 
   async function handleCreateSchedule(
     scheduleData: CreateScheduleAppointmentFormSchema,
@@ -71,6 +99,7 @@ export const CreateScheduleDialog = () => {
         title: 'Agendamento realizado com sucesso!',
         duration: 3000, // 3 SECONDS
       })
+      setOpen(!open)
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -79,46 +108,40 @@ export const CreateScheduleDialog = () => {
       })
     }
   }
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Novo agendamnto</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="flex flex-col items-center max-w-96">
         <DialogHeader>
-          <DialogTitle>Criar novo agendamento</DialogTitle>
+          <DialogTitle>Novo Agendamento</DialogTitle>
         </DialogHeader>
-        <div className="mt-8 flex items-center justify-center">
-          <FormController
-            form={form}
-            // @ts-expect-error Type option
-            inputList={inputList}
-            className="w-96 flex flex-col gap-3"
-            onSubmit={form.handleSubmit(handleCreateSchedule)}
-          >
-            <div className="flex gap-6 mt-6 w-[100%]">
-              <DialogClose asChild>
-                <Button
-                  className="w-[100%]"
-                  variant="outline"
-                  type="button"
-                  onClick={() => {}}
-                >
-                  Voltar
-                </Button>
-              </DialogClose>
-              <Button
-                className="w-[100%]"
-                variant="default"
-                type="submit"
-                isLoading={form.formState.isSubmitting}
-              >
-                Adicionar
-              </Button>
-            </div>
-          </FormController>
-        </div>
+
+        <FormController
+          form={form}
+          inputList={inputList}
+          className="flex flex-col gap-5 mt-8 items-center w-full"
+          onSubmit={form.handleSubmit(handleCreateSchedule)}
+        >
+          <div className="flex gap-6 mt-6 w-[100%]">
+            <Button
+              className="w-[100%]"
+              variant="outline"
+              type="button"
+              onClick={() => setOpen(false)}
+            >
+              Voltar
+            </Button>
+            <Button
+              className="w-[100%]"
+              variant="default"
+              type="submit"
+              isLoading={form.formState.isSubmitting}
+            >
+              Adicionar
+            </Button>
+          </div>
+        </FormController>
       </DialogContent>
     </Dialog>
   )
-}
+})
