@@ -20,8 +20,12 @@ import {
   CreateScheduleDialogRef,
 } from './create-schedule-dialog'
 import { Button } from '@/components/ui/button'
+import { getSchedules } from '@/service/schedule.service'
+import { useAuth } from '@/hook/Auth'
+import { ptBR } from 'date-fns/locale'
 
 export const Schedule = () => {
+  const { user } = useAuth()
   const navigate = useNavigate()
   const createScheduleDialogRef = useRef<CreateScheduleDialogRef>(null)
   const [schedulesList, setSchedulesList] = useState<
@@ -33,8 +37,10 @@ export const Schedule = () => {
   }
 
   useMemo(async () => {
-    setSchedulesList([])
+    setSchedulesList(await getSchedules(user.id))
   }, [])
+
+  console.log(schedulesList)
 
   return (
     <div className="p-8">
@@ -73,7 +79,9 @@ export const Schedule = () => {
                       {schedule.patientName}
                     </TableCell>
                     <TableCell className="text-center">
-                      {format(schedule.date, 'dd/MM/yyyy HH:mm:ss')}
+                      {format(schedule.date, 'PPPP', {
+                        locale: ptBR,
+                      })}
                     </TableCell>
                     <TableCell className="text-center">
                       {schedule.id === '' ? (

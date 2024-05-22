@@ -19,11 +19,12 @@ export async function createSchedule(
 ) {
   const db = getFirestore()
 
-  await addDoc(collection(db, SCHEDULES_FIRESTORE_KEY), scheduleData).catch(
-    (error) => {
-      throw new Error(error.message)
-    },
-  )
+  await addDoc(collection(db, SCHEDULES_FIRESTORE_KEY), {
+    ...scheduleData,
+    date: scheduleData.date.getTime(),
+  }).catch((error) => {
+    throw new Error(error.message)
+  })
 }
 
 export async function getSchedules(
@@ -43,7 +44,7 @@ export async function getSchedules(
     const schedule = scheduleAppointmentSchema.parse({
       id: doc.id,
       patientId: doc.data().patientId,
-      date: doc.data().date,
+      date: new Date(doc.data().date),
       patientName: doc.data().patientName,
       doctorId: doc.data().doctorId,
       hasConfirm: doc.data().hasConfirm,
