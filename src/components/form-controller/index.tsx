@@ -37,6 +37,7 @@ interface InputListProps {
   placeholder?: string
   formItemClassName?: string
   options?: IOptions[]
+  disabled: boolean
 }
 
 type InputType =
@@ -60,6 +61,7 @@ function renderInput(
   placeholder?: string,
   field?: any,
   options?: IOptions[],
+  disabled?: boolean,
 ) {
   switch (type) {
     case 'textarea':
@@ -91,6 +93,7 @@ function renderInput(
           <PopoverTrigger asChild>
             <FormControl>
               <Button
+                disabled={disabled}
                 variant={'outline'}
                 className={cn(
                   'w-full pl-3 text-left font-normal',
@@ -119,7 +122,12 @@ function renderInput(
       )
     default:
       return (
-        <Input type={type || 'text'} placeholder={placeholder} {...field} />
+        <Input
+          disabled={disabled}
+          type={type || 'text'}
+          placeholder={placeholder}
+          {...field}
+        />
       )
   }
 }
@@ -152,6 +160,7 @@ export function FormController({
                     input.placeholder,
                     field,
                     input.options,
+                    input.disabled,
                   )}
                 </FormControl>
                 <FormMessage />
