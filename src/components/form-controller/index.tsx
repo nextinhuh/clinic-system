@@ -24,6 +24,7 @@ import { ptBR } from 'date-fns/locale'
 import { cn } from '@/utils/tw-merge'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Calendar } from '../ui/calendar'
+import { Checkbox } from '../ui/checkbox'
 
 interface IOptions {
   value: string | number
@@ -37,7 +38,7 @@ interface InputListProps {
   placeholder?: string
   formItemClassName?: string
   options?: IOptions[]
-  disabled: boolean
+  disabled?: boolean
 }
 
 type InputType =
@@ -47,6 +48,7 @@ type InputType =
   | 'email'
   | 'password'
   | 'calendar'
+  | 'checkbox'
 
 interface FormControllerProps {
   form: UseFormReturn<any>
@@ -66,6 +68,15 @@ function renderInput(
   switch (type) {
     case 'textarea':
       return <Textarea placeholder={placeholder} {...field} />
+    case 'checkbox':
+      return (
+        <div className="flex items-center space-x-2">
+          <Checkbox disabled={disabled} />
+          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            {placeholder}
+          </label>
+        </div>
+      )
     case 'select':
       return (
         <Select onValueChange={field.onChange} defaultValue={field.value}>

@@ -41,7 +41,6 @@ export const CreateScheduleDialog = forwardRef<
       patientId: '',
       patientName: '',
       doctorId: '',
-      hasConfirm: false,
     },
   })
   const inputList = [
@@ -103,7 +102,7 @@ export const CreateScheduleDialog = forwardRef<
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Não foi possivel realizar o agendamneto',
+        title: 'Não foi possivel realizar o agendamento',
         duration: 3000, // 3 SECONDS
       })
     }

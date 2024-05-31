@@ -10,11 +10,9 @@ import {
 } from '@/components/ui/table'
 import { getActualDate } from '@/utils/parse'
 import { ScheduleAppointmentSchemaData } from '@/utils/types'
-import { format } from 'date-fns'
+import { format, isPast } from 'date-fns'
 import { useMemo, useRef, useState } from 'react'
 import { BsLayoutTextWindow } from 'react-icons/bs'
-import { IoCheckmarkCircleOutline, IoCloseCircleOutline } from 'react-icons/io5'
-import { useNavigate } from 'react-router-dom'
 import {
   CreateScheduleDialog,
   CreateScheduleDialogRef,
@@ -23,28 +21,40 @@ import { Button } from '@/components/ui/button'
 import { getSchedules } from '@/service/schedule.service'
 import { useAuth } from '@/hook/Auth'
 import { ptBR } from 'date-fns/locale'
+import {
+  DetailScheduleDialog,
+  DetailScheduleDialogRef,
+} from './detail-schedule-dialog'
 
 export const Schedule = () => {
   const { user } = useAuth()
-  const navigate = useNavigate()
   const createScheduleDialogRef = useRef<CreateScheduleDialogRef>(null)
+  const detailScheduleDialogRef = useRef<DetailScheduleDialogRef>(null)
   const [schedulesList, setSchedulesList] = useState<
     ScheduleAppointmentSchemaData[]
   >([])
-
-  function handleDetailSchedule(scheduleId: string | null) {
-    navigate(`/schedules/${scheduleId}`)
-  }
 
   useMemo(async () => {
     setSchedulesList(await getSchedules(user.id))
   }, [])
 
-  console.log(schedulesList)
+  function HandleStatus(
+    date: Date,
+    consultId: string,
+  ): 'success' | 'destructive' | 'warning' {
+    if (consultId) {
+      return 'success'
+    } else if (isPast(date)) {
+      return 'destructive'
+    } else {
+      return 'warning'
+    }
+  }
 
   return (
     <div className="p-8">
       <CreateScheduleDialog ref={createScheduleDialogRef} />
+      <DetailScheduleDialog ref={detailScheduleDialogRef} />
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Agendamentos</h1>
         <p className="text-[10px] mt-2 sm:text-xs sm:mt-0">
@@ -84,24 +94,23 @@ export const Schedule = () => {
                       })}
                     </TableCell>
                     <TableCell className="text-center">
-                      {schedule.id === '' ? (
-                        <Badge
-                          className="w-11 rounded-3xl"
-                          variant="destructive"
-                        >
-                          <IoCloseCircleOutline size={24} />
-                        </Badge>
-                      ) : (
-                        <Badge className="w-11 rounded-3xl" variant="success">
-                          <IoCheckmarkCircleOutline size={24} />
-                        </Badge>
-                      )}
+                      <Badge
+                        className="w-11 rounded-3xl"
+                        variant={HandleStatus(
+                          schedule.date,
+                          schedule.consultId,
+                        )}
+                      />
                     </TableCell>
                     <TableCell className="flex justify-center">
                       <BsLayoutTextWindow
                         className="cursor-pointer"
                         size={24}
-                        onClick={() => handleDetailSchedule(schedule.id)}
+                        onClick={() =>
+                          detailScheduleDialogRef.current?.handleOpenDialog(
+                            schedule,
+                          )
+                        }
                       />
                     </TableCell>
                   </TableRow>
