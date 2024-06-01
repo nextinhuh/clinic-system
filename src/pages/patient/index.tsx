@@ -17,6 +17,7 @@ import { IoCloseCircleOutline, IoCheckmarkCircleOutline } from 'react-icons/io5'
 import { BsLayoutTextWindow } from 'react-icons/bs'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/hook/Auth'
+import { ListX } from 'lucide-react'
 
 export function Patient() {
   const navigate = useNavigate()
@@ -52,18 +53,17 @@ export function Patient() {
           </Button>
         </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-center">Nome</TableHead>
-              <TableHead className="text-center">Idade</TableHead>
-              <TableHead className="text-center">E-mail</TableHead>
-              <TableHead className="text-center">Anamnese</TableHead>
-              <TableHead className="text-center">Detalhes</TableHead>
-            </TableRow>
-          </TableHeader>
-
-          {patientList.length !== 0 ? (
+        {patientList.length !== 0 ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-center">Nome</TableHead>
+                <TableHead className="text-center">Idade</TableHead>
+                <TableHead className="text-center">E-mail</TableHead>
+                <TableHead className="text-center">Anamnese</TableHead>
+                <TableHead className="text-center">Detalhes</TableHead>
+              </TableRow>
+            </TableHeader>
             <TableBody>
               {patientList.map((patient) => {
                 return (
@@ -100,7 +100,23 @@ export function Patient() {
                 )
               })}
             </TableBody>
-          ) : (
+          </Table>
+        ) : patientList.length === 0 ? (
+          <div className="flex flex-col items-center justify-center w-full my-24">
+            <ListX size={82} />
+            <p className="font-bold text-2xl">Nenhum paciente cadastado!</p>
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-center">Nome</TableHead>
+                <TableHead className="text-center">Idade</TableHead>
+                <TableHead className="text-center">E-mail</TableHead>
+                <TableHead className="text-center">Anamnese</TableHead>
+                <TableHead className="text-center">Detalhes</TableHead>
+              </TableRow>
+            </TableHeader>
             <TableBody>
               {Array.from({ length: 3 }).map((_, index) => (
                 <TableRow key={index}>
@@ -122,8 +138,8 @@ export function Patient() {
                 </TableRow>
               ))}
             </TableBody>
-          )}
-        </Table>
+          </Table>
+        )}
       </div>
     </div>
   )
