@@ -1,6 +1,7 @@
 import { FormController } from '@/components/form-controller'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
+import { useAuth } from '@/hook/Auth'
 import { createPatient } from '@/service/patient.service'
 import { createPatientFormSchema } from '@/utils/schemas'
 import { CreatePatientFormData } from '@/utils/types'
@@ -11,12 +12,14 @@ import { useNavigate } from 'react-router-dom'
 export function CreatePatient() {
   const navigate = useNavigate()
   const { toast } = useToast()
+  const { user } = useAuth()
   const form = useForm<CreatePatientFormData>({
     resolver: zodResolver(createPatientFormSchema),
     defaultValues: {
       age: 0,
       name: '',
       email: '',
+      doctorId: user.id,
     },
   })
   const inputList = [

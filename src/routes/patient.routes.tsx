@@ -13,7 +13,7 @@ export const PatientRoutes = [
     element: <CreatePatient />,
   },
   {
-    path: '/patient/:patientId',
+    path: '/patient/detail/:patientId',
     element: <DetailPatient />,
   },
   {

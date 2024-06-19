@@ -78,6 +78,9 @@ export const createPatientFormSchema = z.object({
     .refine((data) => data.length >= 3, {
       message: 'O campo nome deve conter mais de 3 caracteres',
     }),
+  doctorId: z.string({
+    required_error: 'Identificador do médico é obrigatório',
+  }),
   email: z
     .string({ required_error: 'E-mail é obrigatório' })
     .email({ message: 'E-mail inválido' }),
