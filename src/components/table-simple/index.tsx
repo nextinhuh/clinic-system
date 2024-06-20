@@ -13,25 +13,51 @@ import { cpf, cnpj } from 'cpf-cnpj-validator'
 import { Skeleton } from '../ui/skeleton'
 import { useNavigate } from 'react-router-dom'
 import { ListX } from 'lucide-react'
+import { ptBR } from 'date-fns/locale'
+import { format, isPast } from 'date-fns'
 
 export interface TableDefsProps {
   tableRowKey: string
   tableColumnName: string
-  tableColumnType: 'detail' | 'text' | 'active' | 'cpf' | 'cnpj'
+  tableColumnType:
+    | 'detail'
+    | 'customDetail'
+    | 'text'
+    | 'active'
+    | 'cpf'
+    | 'cnpj'
+    | 'date'
+    | 'scheduleStatus'
 }
 
 interface TableSimpleProps<T> {
   listData?: T[]
   isFetiching: boolean
   tableDefs?: TableDefsProps[]
+  customDetailCallback?: (data?: any) => void
 }
 
 export function TableSimple<T>({
   listData,
   isFetiching,
   tableDefs,
+  customDetailCallback,
 }: TableSimpleProps<T>) {
   const navigate = useNavigate()
+
+  function HandleScheduleStatus(
+    date: Date,
+    consultId: string,
+  ): 'success' | 'destructive' | 'warning' {
+    if (consultId) {
+      return 'success'
+    } else if (isPast(date)) {
+      return 'destructive'
+    } else {
+      return 'warning'
+    }
+  }
+
   return (
     <div>
       {!isFetiching && listData?.length === 0 ? (
@@ -78,6 +104,32 @@ export function TableSimple<T>({
                     <TableRow key={index}>
                       {tableDefs?.map((def) => {
                         switch (def.tableColumnType) {
+                          case 'scheduleStatus':
+                            return (
+                              <TableCell
+                                key={def.tableRowKey}
+                                className="font-medium text-center"
+                              >
+                                <Badge
+                                  className="w-11 rounded-3xl"
+                                  variant={HandleScheduleStatus(
+                                    item.date,
+                                    item.consultId,
+                                  )}
+                                />
+                              </TableCell>
+                            )
+                          case 'date':
+                            return (
+                              <TableCell
+                                key={def.tableRowKey}
+                                className="font-medium text-center"
+                              >
+                                {format(item[def.tableRowKey], 'PPPP', {
+                                  locale: ptBR,
+                                })}
+                              </TableCell>
+                            )
                           case 'cnpj':
                             return (
                               <TableCell
@@ -106,6 +158,23 @@ export function TableSimple<T>({
                                   className="cursor-pointer"
                                   size={24}
                                   onClick={() => navigate(`detail/${item.id}`)}
+                                />
+                              </TableCell>
+                            )
+                          case 'customDetail':
+                            return (
+                              <TableCell
+                                key={def.tableRowKey}
+                                className="flex justify-center"
+                              >
+                                <BsLayoutTextWindow
+                                  className="cursor-pointer"
+                                  size={24}
+                                  onClick={
+                                    customDetailCallback
+                                      ? () => customDetailCallback(item)
+                                      : () => {}
+                                  }
                                 />
                               </TableCell>
                             )
