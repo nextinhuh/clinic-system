@@ -24,6 +24,7 @@ import { ptBR } from 'date-fns/locale'
 import { cn } from '@/utils/tw-merge'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Calendar } from '../ui/calendar'
+import { Checkbox } from '../ui/checkbox'
 
 interface IOptions {
   value: string | number
@@ -37,6 +38,7 @@ interface InputListProps {
   placeholder?: string
   formItemClassName?: string
   options?: IOptions[]
+  disabled?: boolean
 }
 
 type InputType =
@@ -46,6 +48,7 @@ type InputType =
   | 'email'
   | 'password'
   | 'calendar'
+  | 'checkbox'
 
 interface FormControllerProps {
   form: UseFormReturn<any>
@@ -60,10 +63,20 @@ function renderInput(
   placeholder?: string,
   field?: any,
   options?: IOptions[],
+  disabled?: boolean,
 ) {
   switch (type) {
     case 'textarea':
       return <Textarea placeholder={placeholder} {...field} />
+    case 'checkbox':
+      return (
+        <div className="flex items-center space-x-2">
+          <Checkbox disabled={disabled} />
+          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            {placeholder}
+          </label>
+        </div>
+      )
     case 'select':
       return (
         <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -91,6 +104,7 @@ function renderInput(
           <PopoverTrigger asChild>
             <FormControl>
               <Button
+                disabled={disabled}
                 variant={'outline'}
                 className={cn(
                   'w-full pl-3 text-left font-normal',
@@ -119,7 +133,12 @@ function renderInput(
       )
     default:
       return (
-        <Input type={type || 'text'} placeholder={placeholder} {...field} />
+        <Input
+          disabled={disabled}
+          type={type || 'text'}
+          placeholder={placeholder}
+          {...field}
+        />
       )
   }
 }
@@ -152,6 +171,7 @@ export function FormController({
                     input.placeholder,
                     field,
                     input.options,
+                    input.disabled,
                   )}
                 </FormControl>
                 <FormMessage />

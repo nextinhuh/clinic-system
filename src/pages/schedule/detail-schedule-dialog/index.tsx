@@ -10,36 +10,37 @@ import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { allPatient } from '@/service/patient.service'
-import { createSchedule } from '@/service/schedule.service'
 import { FormController } from '@/components/form-controller'
-import { createScheduleAppointmentFormSchema } from '@/utils/schemas'
-import { CreateScheduleAppointmentFormSchema, PatientData } from '@/utils/types'
+import { scheduleAppointmentSchema } from '@/utils/schemas'
+import { ScheduleAppointmentSchemaData } from '@/utils/types'
+import { isPast } from 'date-fns'
 
-interface CreateScheduleDialogProps {
+interface DetailScheduleDialogProps {
   isOpen?: boolean
 }
 
-export interface CreateScheduleDialogRef {
-  handleOpenDialog: () => void
+export interface DetailScheduleDialogRef {
+  handleOpenDialog: (scheduleData: ScheduleAppointmentSchemaData) => void
   handleCloseDialog: () => void
 }
 
 // eslint-disable-next-line react/display-name
-export const CreateScheduleDialog = forwardRef<
-  CreateScheduleDialogRef,
-  CreateScheduleDialogProps
->(({ isOpen = false }: CreateScheduleDialogProps, ref) => {
+export const DetailScheduleDialog = forwardRef<
+  DetailScheduleDialogRef,
+  DetailScheduleDialogProps
+>(({ isOpen = false }: DetailScheduleDialogProps, ref) => {
   const { toast } = useToast()
   const { user } = useAuth()
   const [open, setOpen] = useState(isOpen)
-  const [allPatients, setAllPatients] = useState<PatientData[]>()
-  const form = useForm<CreateScheduleAppointmentFormSchema>({
-    resolver: zodResolver(createScheduleAppointmentFormSchema),
+  const [schedule, setSchedule] = useState<ScheduleAppointmentSchemaData>(
+    {} as ScheduleAppointmentSchemaData,
+  )
+  const form = useForm<ScheduleAppointmentSchemaData>({
+    resolver: zodResolver(scheduleAppointmentSchema),
     defaultValues: {
       date: new Date(),
       patientId: '',
-      patientName: '',
+      patientName: ' schedule?.patientName',
       doctorId: '',
     },
   })
@@ -49,94 +50,82 @@ export const CreateScheduleDialog = forwardRef<
       label: 'Data',
       placeholder: 'Selecione uma data',
       type: 'calendar',
+      disabled: true,
     },
     {
-      name: 'patientId',
+      name: 'patientName',
       label: 'Paciente',
-      placeholder: 'Selecione um paciente',
-      type: 'select',
-      options: allPatients?.map((patient) => {
-        return {
-          label: patient.name,
-          value: patient.id,
-        }
-      }),
+      disabled: true,
+    },
+    {
+      name: 'doctorId',
+      label: 'Nome do médico',
+      disabled: true,
     },
   ]
   useMemo(async () => {
-    try {
-      setAllPatients(await allPatient(user?.id))
-    } catch (error) {}
-  }, [])
+    if (schedule !== undefined) {
+      form.reset({
+        date: schedule?.date,
+        patientName: schedule?.patientName,
+        doctorId: user.name,
+      })
+    }
+  }, [schedule])
 
   useImperativeHandle(ref, () => ({
-    handleOpenDialog(): void {
+    handleOpenDialog(scheduleData: ScheduleAppointmentSchemaData): void {
       setOpen(true)
+      setSchedule(scheduleData)
     },
     handleCloseDialog(): void {
       setOpen(false)
     },
   }))
 
-  async function handleCreateSchedule(
-    scheduleData: CreateScheduleAppointmentFormSchema,
-  ) {
-    const patientData = allPatients?.find(
-      (patient) => patient.id === scheduleData.patientId,
-    )
-
-    scheduleData = {
-      ...scheduleData,
-      doctorId: user?.id || '',
-      patientName: patientData?.name || '',
-    }
-
+  async function handleConfirmSchedule() {
     try {
-      await createSchedule(scheduleData)
       toast({
         variant: 'success',
-        title: 'Agendamento realizado com sucesso!',
+        title: 'Agendamento confirmado com sucesso!',
         duration: 3000, // 3 SECONDS
       })
       setOpen(!open)
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Não foi possivel realizar o agendamento',
+        title: 'Não foi possivel confirmar 0 agendamento',
         duration: 3000, // 3 SECONDS
       })
     }
+  }
+
+  function handleCheckScheduleDate(): boolean {
+    return isPast(schedule.date)
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="flex flex-col items-center max-w-96">
         <DialogHeader>
-          <DialogTitle>Novo Agendamento</DialogTitle>
+          <DialogTitle>Detalhes do agendamento</DialogTitle>
         </DialogHeader>
 
         <FormController
           form={form}
           inputList={inputList}
           className="flex flex-col gap-5 mt-8 items-center w-full"
-          onSubmit={form.handleSubmit(handleCreateSchedule)}
+          onSubmit={form.handleSubmit(handleConfirmSchedule)}
         >
           <div className="flex gap-6 mt-6 w-[100%]">
-            <Button
-              className="w-[100%]"
-              variant="outline"
-              type="button"
-              onClick={() => setOpen(false)}
-            >
-              Voltar
-            </Button>
             <Button
               className="w-[100%]"
               variant="default"
               type="submit"
               isLoading={form.formState.isSubmitting}
+              disabled={handleCheckScheduleDate()}
             >
-              Adicionar
+              Gerar consulta
             </Button>
           </div>
         </FormController>

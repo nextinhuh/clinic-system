@@ -78,6 +78,9 @@ export const createPatientFormSchema = z.object({
     .refine((data) => data.length >= 3, {
       message: 'O campo nome deve conter mais de 3 caracteres',
     }),
+  doctorId: z.string({
+    required_error: 'Identificador do médico é obrigatório',
+  }),
   email: z
     .string({ required_error: 'E-mail é obrigatório' })
     .email({ message: 'E-mail inválido' }),
@@ -167,11 +170,10 @@ export const updatePatientAnamnesisFormSchema = z.object({
 export const scheduleAppointmentSchema = z.object({
   id: z.string(),
   date: z.date(),
-  name: z.string(),
+  patientName: z.string(),
   doctorId: z.string(),
   patientId: z.string(),
-  consult_id: z.string(),
-  hasConfirm: z.boolean(),
+  consultId: z.string(),
 })
 
 export const createScheduleAppointmentFormSchema = z.object({
@@ -184,7 +186,6 @@ export const createScheduleAppointmentFormSchema = z.object({
     }),
   patientName: z.string(),
   doctorId: z.string(),
-  hasConfirm: z.boolean(),
   date: z.coerce.date().refine((data) => data >= new Date(), {
     message: 'A data da consulta deve ser maior que a atual',
   }),
