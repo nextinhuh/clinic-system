@@ -1,8 +1,8 @@
 import { FormController } from '@/components/form-controller'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { updatePatient } from '@/service/patient.service'
-import { patientSchema, updateUserFormSchema } from '@/utils/schemas'
+import { updatePatient, updatePatientActive } from '@/service/patient.service'
+import { patientSchema, updatePatientFormSchema } from '@/utils/schemas'
 import { PatientData, UpdatePatientFormData } from '@/utils/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo } from 'react'
@@ -20,11 +20,12 @@ export function PatientCard({
 }: PatientCardProps) {
   const navigate = useNavigate()
   const form = useForm<UpdatePatientFormData>({
-    resolver: zodResolver(updateUserFormSchema),
+    resolver: zodResolver(updatePatientFormSchema),
     defaultValues: {
       age: 0,
       name: '',
       email: '',
+      patientId: patientData?.id,
     },
   })
   const inputList = [
@@ -46,14 +47,18 @@ export function PatientCard({
       type: 'number',
     },
   ]
-  useMemo(async () => {
+
+  useMemo(() => {
     if (patientData) handleSetValueForm(patientSchema.parse(patientData))
-  }, [patientData])
+  }, [isLoadingPatient])
 
   function handleSetValueForm(patientData: PatientData) {
-    form.setValue('name', patientData?.name ? patientData.name : '')
-    form.setValue('email', patientData?.email ? patientData.email : '')
-    form.setValue('age', patientData?.age ? patientData.age : 0)
+    form.reset({
+      age: patientData.age,
+      name: patientData.name,
+      email: patientData.email,
+      patientId: patientData?.id,
+    })
   }
 
   function handleGoBack() {
@@ -61,7 +66,14 @@ export function PatientCard({
   }
 
   async function handleUpdatePatient(patientDataForm: UpdatePatientFormData) {
-    await updatePatient(String(patientData?.id), patientDataForm)
+    console.log(patientDataForm)
+
+    await updatePatient(patientDataForm)
+  }
+
+  async function handleToggleActivePatient() {
+    await updatePatientActive(String(patientData?.id), !patientData?.active)
+    window.location.reload()
   }
 
   return (
@@ -80,32 +92,34 @@ export function PatientCard({
           </div>
         </div>
       ) : (
-        <FormController
-          form={form}
-          inputList={inputList}
-          className="w-96 flex flex-col gap-3 mt-8"
-          onSubmit={form.handleSubmit(handleUpdatePatient)}
-        >
-          <div className="flex gap-6 mt-6 w-[100%]">
-            <Button
-              className="w-[100%]"
-              variant="outline"
-              type="button"
-              onClick={handleGoBack}
-            >
+        <div className="w-full">
+          <FormController
+            form={form}
+            inputList={inputList}
+            className="w-full flex gap-3 mt-8"
+            onSubmit={form.handleSubmit(handleUpdatePatient)}
+          />
+          <div className="flex items-center justify-center gap-6 mt-14 w-full">
+            <Button variant="outline" type="button" onClick={handleGoBack}>
               Voltar
             </Button>
-
             <Button
-              className="w-[100%]"
+              variant="secondary"
+              type="button"
+              onClick={handleToggleActivePatient}
+            >
+              {patientData?.active ? 'Desativar' : 'Ativar'} paciente
+            </Button>
+            <Button
               variant="default"
               type="submit"
               isLoading={form.formState.isSubmitting}
+              onClick={form.handleSubmit(handleUpdatePatient)}
             >
               Atualizar dados
             </Button>
           </div>
-        </FormController>
+        </div>
       )}
     </>
   )

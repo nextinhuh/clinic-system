@@ -62,6 +62,7 @@ export const patientSchema = z.object({
   age: z.number(),
   name: z.string(),
   email: z.string(),
+  active: z.boolean(),
   anamnesisId: z.string(),
 })
 
@@ -84,13 +85,16 @@ export const createPatientFormSchema = z.object({
   email: z
     .string({ required_error: 'E-mail é obrigatório' })
     .email({ message: 'E-mail inválido' }),
+  active: z.boolean(),
 })
 
 export const updatePatientFormSchema = z.object({
+  patientId: z.string({
+    required_error: 'Identificador do paciente é obrigatório',
+  }),
   age: z.coerce
     .number({ required_error: 'Idade é obrigatório' })
-    .max(100, 'Idade inválida')
-    .gte(-1, { message: 'Idade é obrigatório' }),
+    .min(1, { message: 'Idade inválida' }),
   name: z
     .string({ required_error: 'Nome é obrigatório' })
     .refine((data) => data.trim() !== '', {

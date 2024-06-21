@@ -23,6 +23,10 @@ const badgeVariants = cva(
           'border-transparent bg-yellow-600 text-secondary-foreground hover:bg-yellow-600/80',
         destructive:
           'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
+        active:
+          'border-transparent bg-green-600 text-secondary-foreground hover:bg-green-600/80',
+        desactive:
+          'border-transparent bg-destructive text-secondary-foreground hover:bg-destructive/80',
         outline: 'text-foreground',
       },
     },
@@ -36,7 +40,7 @@ export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof badgeVariants> {}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
+function Badge({ className, variant, children, ...props }: BadgeProps) {
   return (
     <div className={cn(badgeVariants({ variant }), className)} {...props}>
       {variant === 'success' ? (
@@ -45,7 +49,9 @@ function Badge({ className, variant, ...props }: BadgeProps) {
         <IoCloseCircleOutline size={24} />
       ) : variant === 'warning' ? (
         <IoWarningOutline size={24} />
-      ) : null}
+      ) : (
+        <>{children}</>
+      )}
     </div>
   )
 }

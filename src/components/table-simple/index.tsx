@@ -28,6 +28,7 @@ export interface TableDefsProps {
     | 'cnpj'
     | 'date'
     | 'scheduleStatus'
+    | 'pacientAnamnesisStatus'
 }
 
 interface TableSimpleProps<T> {
@@ -55,6 +56,16 @@ export function TableSimple<T>({
       return 'destructive'
     } else {
       return 'warning'
+    }
+  }
+
+  function HandlePatientAnamnesisStatus(
+    anamnesisId: string,
+  ): 'success' | 'destructive' {
+    if (anamnesisId !== '') {
+      return 'success'
+    } else {
+      return 'destructive'
     }
   }
 
@@ -104,6 +115,20 @@ export function TableSimple<T>({
                     <TableRow key={index}>
                       {tableDefs?.map((def) => {
                         switch (def.tableColumnType) {
+                          case 'pacientAnamnesisStatus':
+                            return (
+                              <TableCell
+                                key={def.tableRowKey}
+                                className="font-medium text-center"
+                              >
+                                <Badge
+                                  className="w-11 rounded-3xl"
+                                  variant={HandlePatientAnamnesisStatus(
+                                    item[def.tableRowKey],
+                                  )}
+                                />
+                              </TableCell>
+                            )
                           case 'scheduleStatus':
                             return (
                               <TableCell
@@ -196,16 +221,16 @@ export function TableSimple<T>({
                                 {item[def.tableRowKey] ? (
                                   <Badge
                                     className="w-11 rounded-3xl"
-                                    variant="destructive"
+                                    variant="success"
                                   >
-                                    <IoCloseCircleOutline size={24} />
+                                    <IoCheckmarkCircleOutline size={24} />
                                   </Badge>
                                 ) : (
                                   <Badge
                                     className="w-11 rounded-3xl"
-                                    variant="success"
+                                    variant="destructive"
                                   >
-                                    <IoCheckmarkCircleOutline size={24} />
+                                    <IoCloseCircleOutline size={24} />
                                   </Badge>
                                 )}
                               </TableCell>

@@ -39,6 +39,7 @@ export async function allPatient(doctorId: string): Promise<PatientData[]> {
       name: doc.data().name,
       age: doc.data().age,
       email: doc.data().email,
+      active: doc.data().active,
       anamnesisId: doc.data().anamnesisId ? doc.data().anamnesisId : '',
     })
     patientList.push(patient)
@@ -76,13 +77,32 @@ export async function createPatient(patientData: CreatePatientFormData) {
   )
 }
 
-export async function updatePatient(
-  patientId: string,
-  patientData: UpdatePatientFormData,
-) {
+export async function updatePatientActive(patientId: string, active: boolean) {
   const db = getFirestore()
 
-  await updateDoc(doc(db, PATIENT_FIRESTORE_KEY, patientId), patientData)
+  await updateDoc(doc(db, PATIENT_FIRESTORE_KEY, patientId), {
+    active,
+  })
+    .catch((error) => {
+      throw new Error(error.message)
+    })
+    .finally(() => {
+      toast({
+        variant: 'success',
+        title: `Paciente ${active ? 'habilitado' : 'desabilitado'} com sucesso!`,
+        duration: 3000, // 3 SECONDS
+      })
+    })
+}
+
+export async function updatePatient(patientData: UpdatePatientFormData) {
+  const db = getFirestore()
+
+  await updateDoc(doc(db, PATIENT_FIRESTORE_KEY, patientData.patientId), {
+    age: patientData.age,
+    name: patientData.name,
+    email: patientData.email,
+  })
     .catch((error) => {
       throw new Error(error.message)
     })

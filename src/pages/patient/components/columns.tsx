@@ -29,9 +29,14 @@ export const patientTableDefs: TableDefsProps[] = [
     tableColumnType: 'text',
   },
   {
+    tableRowKey: 'active',
+    tableColumnName: 'Habilitado',
+    tableColumnType: 'active',
+  },
+  {
     tableRowKey: 'anamnesisId',
     tableColumnName: 'Anamnese',
-    tableColumnType: 'active',
+    tableColumnType: 'pacientAnamnesisStatus',
   },
   {
     tableRowKey: 'details',

@@ -20,6 +20,7 @@ export function CreatePatient() {
       name: '',
       email: '',
       doctorId: user.id,
+      active: false,
     },
   })
   const inputList = [

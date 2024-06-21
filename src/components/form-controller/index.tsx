@@ -161,11 +161,11 @@ export function FormController({
             render={({ field }) => (
               <FormItem
                 className={
-                  input.formItemClassName ? input.formItemClassName : 'w-[100%]'
+                  input.formItemClassName ? input.formItemClassName : 'w-full'
                 }
               >
                 <FormLabel className="mr-2">{input.label}</FormLabel>
-                <FormControl className="">
+                <FormControl>
                   {renderInput(
                     input.type as InputType,
                     input.placeholder,

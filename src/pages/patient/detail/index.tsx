@@ -6,6 +6,7 @@ import { AnamnesisCard } from './components/AnamnesisCard'
 import { patientById } from '@/service/patient.service'
 import { PatientData } from '@/utils/types'
 import { toast } from '@/components/ui/use-toast'
+import { Badge } from '@/components/ui/badge'
 
 export function DetailPatient() {
   const { patientId } = useParams()
@@ -35,7 +36,15 @@ export function DetailPatient() {
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold">Detalhes do Paciente</h1>
+      <div className="w-full flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Detalhes do Paciente</h1>
+        <Badge
+          variant={patientData?.active ? 'active' : 'desactive'}
+          className="text-lg"
+        >
+          {patientData?.active ? 'Ativo' : 'Inativo'}
+        </Badge>
+      </div>
 
       <div className="flex flex-col w-[100%] border rounded-lg p-8 mt-8 items-center justify-center">
         <Tabs value={tabValue} className="w-[100%]">
