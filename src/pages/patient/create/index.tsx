@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { useAuth } from '@/hook/Auth'
 import { createPatient } from '@/service/patient.service'
+import { createPatientInputDefList } from '@/utils/inputs-def'
 import { createPatientFormSchema } from '@/utils/schemas'
 import { CreatePatientFormData } from '@/utils/types'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,9 +11,9 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
 export function CreatePatient() {
-  const navigate = useNavigate()
-  const { toast } = useToast()
   const { user } = useAuth()
+  const { toast } = useToast()
+  const navigate = useNavigate()
   const form = useForm<CreatePatientFormData>({
     resolver: zodResolver(createPatientFormSchema),
     defaultValues: {
@@ -23,25 +24,6 @@ export function CreatePatient() {
       active: false,
     },
   })
-  const inputList = [
-    {
-      name: 'name',
-      label: 'Nome',
-      placeholder: 'Digite o nome do paciente',
-    },
-    {
-      name: 'email',
-      label: 'E-mail',
-      placeholder: 'Digite o e-mail do paciente',
-      type: 'email',
-    },
-    {
-      name: 'age',
-      label: 'Idade',
-      placeholder: 'Digite a idade do paciente',
-      type: 'number',
-    },
-  ]
 
   function handleGoBack() {
     navigate('/patient')
@@ -78,7 +60,7 @@ export function CreatePatient() {
       <div className="w-[100%] border rounded-lg p-8 mt-8 flex items-center justify-center">
         <FormController
           form={form}
-          inputList={inputList}
+          inputList={createPatientInputDefList}
           className="w-96 flex flex-col gap-3"
           onSubmit={form.handleSubmit(handleCreatePatient)}
         >

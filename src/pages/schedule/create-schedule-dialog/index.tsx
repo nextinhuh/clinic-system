@@ -15,6 +15,7 @@ import { createSchedule } from '@/service/schedule.service'
 import { FormController } from '@/components/form-controller'
 import { createScheduleAppointmentFormSchema } from '@/utils/schemas'
 import { CreateScheduleAppointmentFormSchema, PatientData } from '@/utils/types'
+import { handleMountCreateScheduleInputDefList } from '@/utils/inputs-def'
 
 interface CreateScheduleDialogProps {
   isOpen?: boolean
@@ -25,7 +26,6 @@ export interface CreateScheduleDialogRef {
   handleCloseDialog: () => void
 }
 
-// eslint-disable-next-line react/display-name
 export const CreateScheduleDialog = forwardRef<
   CreateScheduleDialogRef,
   CreateScheduleDialogProps
@@ -33,7 +33,7 @@ export const CreateScheduleDialog = forwardRef<
   const { toast } = useToast()
   const { user } = useAuth()
   const [open, setOpen] = useState(isOpen)
-  const [allPatients, setAllPatients] = useState<PatientData[]>()
+  const [allPatients, setAllPatients] = useState<PatientData[]>([])
   const form = useForm<CreateScheduleAppointmentFormSchema>({
     resolver: zodResolver(createScheduleAppointmentFormSchema),
     defaultValues: {
@@ -43,26 +43,7 @@ export const CreateScheduleDialog = forwardRef<
       doctorId: '',
     },
   })
-  const inputList = [
-    {
-      name: 'date',
-      label: 'Data',
-      placeholder: 'Selecione uma data',
-      type: 'calendar',
-    },
-    {
-      name: 'patientId',
-      label: 'Paciente',
-      placeholder: 'Selecione um paciente',
-      type: 'select',
-      options: allPatients?.map((patient) => {
-        return {
-          label: patient.name,
-          value: patient.id,
-        }
-      }),
-    },
-  ]
+
   useMemo(async () => {
     try {
       setAllPatients(await allPatient(user?.id))
@@ -84,6 +65,14 @@ export const CreateScheduleDialog = forwardRef<
     const patientData = allPatients?.find(
       (patient) => patient.id === scheduleData.patientId,
     )
+
+    if (!patientData) {
+      return toast({
+        variant: 'destructive',
+        title: 'Não foi possivel realizar o agendamento',
+        duration: 3000, // 3 SECONDS
+      })
+    }
 
     scheduleData = {
       ...scheduleData,
@@ -117,7 +106,7 @@ export const CreateScheduleDialog = forwardRef<
 
         <FormController
           form={form}
-          inputList={inputList}
+          inputList={handleMountCreateScheduleInputDefList(allPatients)}
           className="flex flex-col gap-5 mt-8 items-center w-full"
           onSubmit={form.handleSubmit(handleCreateSchedule)}
         >
@@ -144,3 +133,4 @@ export const CreateScheduleDialog = forwardRef<
     </Dialog>
   )
 })
+CreateScheduleDialog.displayName = 'CreateScheduleDialog'

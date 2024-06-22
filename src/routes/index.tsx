@@ -4,6 +4,7 @@ import { PrivateRoutes } from './PrivateRoutes'
 import { Home } from '@/pages/home'
 import { Appointment } from '@/pages/appointment'
 import { PatientRoutes } from './patient.routes'
+import { ConsultRoutes } from './consult.routes'
 
 export const routes = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ export const routes = createBrowserRouter([
         element: <Appointment />,
       },
       ...PatientRoutes,
+      ...ConsultRoutes,
     ],
   },
   {

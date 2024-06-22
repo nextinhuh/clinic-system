@@ -31,16 +31,6 @@ interface IOptions {
   label: string
 }
 
-interface InputListProps {
-  name: string
-  type?: string
-  label: string
-  placeholder?: string
-  formItemClassName?: string
-  options?: IOptions[]
-  disabled?: boolean
-}
-
 type InputType =
   | 'text'
   | 'textarea'
@@ -49,6 +39,17 @@ type InputType =
   | 'password'
   | 'calendar'
   | 'checkbox'
+  | 'number'
+
+export type InputListProps = {
+  name: string
+  type?: InputType
+  label: string
+  placeholder?: string
+  formItemClassName?: string
+  options?: IOptions[]
+  disabled?: boolean
+}
 
 interface FormControllerProps {
   form: UseFormReturn<any>

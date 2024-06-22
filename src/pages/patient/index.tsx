@@ -6,11 +6,11 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hook/Auth'
 import { TableSimple } from '@/components/table-simple'
-import { patientTableDefs } from './components/columns'
+import { patientTableDefs } from '@/utils/columns-def'
 
 export function Patient() {
-  const navigate = useNavigate()
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [patientList, setPatientList] = useState<PatientData[]>([])
   const [loadingList, setLoadingList] = useState<boolean>(false)
 

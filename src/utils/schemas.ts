@@ -194,3 +194,21 @@ export const createScheduleAppointmentFormSchema = z.object({
     message: 'A data da consulta deve ser maior que a atual',
   }),
 })
+
+export const consultStatusEnum = z.enum([
+  'Remarcado',
+  'Encaminhado',
+  'Impedimento',
+  'Em progresso',
+])
+
+export const createConsultFormSchema = z.object({
+  date: z.date({ required_error: 'A data da consulta é obrigatória' }),
+  resume: z.string({ required_error: 'Resumo do motivo é obrigatório' }),
+  prescription: z.string({ required_error: 'Prescrição é obrigatória' }),
+  assessment: z.string({ required_error: 'Avaliação do caso é obrigatória' }),
+  guidance: z.string({ required_error: 'Orientações é obrigatório' }),
+  status: consultStatusEnum,
+  doctorId: z.string(),
+  patientId: z.string(),
+})

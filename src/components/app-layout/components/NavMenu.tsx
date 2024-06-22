@@ -36,6 +36,17 @@ export function NavMenu() {
       >
         AGENDAMENTO
       </NavLink>
+      <NavLink
+        to="/consult"
+        className={({ isActive }) =>
+          (isActive
+            ? 'text-white'
+            : 'text-slate-400 hover:text-white duration-100') +
+          ' text-base font-bold cursor-pointer '
+        }
+      >
+        CONSULTAS
+      </NavLink>
     </div>
   )
 }
