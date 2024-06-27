@@ -19,7 +19,7 @@ export function CreateConsult() {
       guidance: '',
       prescription: '',
       resume: '',
-      status: 'Em progresso',
+      status: 1,
     },
   })
 

@@ -60,10 +60,12 @@ export const createConsultInputDefList: InputListProps[] = [
     label: 'Status da consulta',
     placeholder: 'Selecione um status',
     type: 'select',
-    options: consultStatusEnum.options.map((status, index) => {
+    options: Object.entries(consultStatusEnum._def.values)
+    .filter(([key]) => !isNaN(Number(key)))
+    .map(([key, value]) => {
       return {
-        label: status,
-        value: index,
+        label: value,
+        value: key,
       }
     }),
   },

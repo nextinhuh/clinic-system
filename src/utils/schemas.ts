@@ -195,12 +195,20 @@ export const createScheduleAppointmentFormSchema = z.object({
   }),
 })
 
-export const consultStatusEnum = z.enum([
+enum ConsultStatus {
+  Remarcado = 1,
+  Encaminhado = 2,
+  Impedimento = 3,
+  'Em progresso' = 4,
+}
+
+export const consultStatusEnum = z.nativeEnum(ConsultStatus)
+/*export const consultStatusEnum = z.nativeEnum([
   'Remarcado',
   'Encaminhado',
   'Impedimento',
   'Em progresso',
-])
+])*/
 
 export const createConsultFormSchema = z.object({
   date: z.date({ required_error: 'A data da consulta é obrigatória' }),
@@ -208,7 +216,12 @@ export const createConsultFormSchema = z.object({
   prescription: z.string({ required_error: 'Prescrição é obrigatória' }),
   assessment: z.string({ required_error: 'Avaliação do caso é obrigatória' }),
   guidance: z.string({ required_error: 'Orientações é obrigatório' }),
-  status: consultStatusEnum,
+  status: z.string().transform(Number).refine(value =>{
+    console.log(value);
+    Object.values(consultStatusEnum).includes(value), {
+      message: 'Invalid enum value',
+    }
+  }),
   doctorId: z.string(),
   patientId: z.string(),
 })
