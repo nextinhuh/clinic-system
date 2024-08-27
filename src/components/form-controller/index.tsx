@@ -28,7 +28,7 @@ import { Checkbox } from '../ui/checkbox'
 
 interface IOptions {
   value: string | number
-  label: string
+  label: string | number
 }
 
 type InputType =
