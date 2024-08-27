@@ -43,12 +43,12 @@ type InputType =
 
 export type InputListProps = {
   name: string
-  type?: InputType
   label: string
+  type: InputType
+  disabled?: boolean
+  options?: IOptions[]
   placeholder?: string
   formItemClassName?: string
-  options?: IOptions[]
-  disabled?: boolean
 }
 
 interface FormControllerProps {

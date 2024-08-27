@@ -1,4 +1,4 @@
-import { FormController } from '@/components/form-controller'
+import { FormController, InputListProps } from '@/components/form-controller'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useToast } from '@/components/ui/use-toast'
@@ -42,8 +42,7 @@ export function AnamnesisCard({ patientData }: AnamnesisCardProps) {
       patientId: String(patientData?.id),
     },
   })
-
-  const inputList = [
+  const inputList: InputListProps[] = [
     {
       name: 'allergy',
       label: 'Alergias ?',
@@ -184,7 +183,7 @@ export function AnamnesisCard({ patientData }: AnamnesisCardProps) {
                 type="submit"
                 isLoading={form.formState.isSubmitting}
               >
-                {patientData?.anamnesisId ? 'Atualizar' : 'Criar'} dados
+                {patientData?.anamnesisId ? 'Atualizar' : 'Salvar'} dados
               </Button>
             </div>
           </FormController>

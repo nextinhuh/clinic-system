@@ -132,7 +132,7 @@ export async function createAnamnesisPatient(
     .finally(() => {
       toast({
         variant: 'success',
-        title: 'Dados atualizados com sucesso!',
+        title: 'Anamnese salva com sucesso!',
         duration: 3000, // 3 SECONDS
       })
     })
@@ -170,7 +170,7 @@ export async function updateAnamnesisPatient(
     .finally(() => {
       toast({
         variant: 'success',
-        title: 'Dados atualizados com sucesso!',
+        title: 'Anamnese atualizada com sucesso!',
         duration: 3000, // 3 SECONDS
       })
     })

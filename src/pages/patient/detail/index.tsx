@@ -70,6 +70,7 @@ export function DetailPatient() {
             <PatientCard
               patientData={patientData}
               isLoadingPatient={isLoading}
+              setPatientData={setPatientData}
             />
           </TabsContent>
           <TabsContent value="anamnesisDetail">

@@ -1,4 +1,4 @@
-import { FormController } from '@/components/form-controller'
+import { FormController, InputListProps } from '@/components/form-controller'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { updatePatient, updatePatientActive } from '@/service/patient.service'
@@ -12,10 +12,12 @@ import { useNavigate } from 'react-router-dom'
 interface PatientCardProps {
   patientData?: PatientData
   isLoadingPatient: boolean
+  setPatientData: (patientData: PatientData) => void
 }
 
 export function PatientCard({
   patientData,
+  setPatientData,
   isLoadingPatient,
 }: PatientCardProps) {
   const navigate = useNavigate()
@@ -28,10 +30,11 @@ export function PatientCard({
       patientId: patientData?.id,
     },
   })
-  const inputList = [
+  const inputList: InputListProps[] = [
     {
       name: 'name',
       label: 'Nome',
+      type: 'text',
       placeholder: 'Digite o nome do paciente',
     },
     {
@@ -49,7 +52,8 @@ export function PatientCard({
   ]
 
   useMemo(() => {
-    if (patientData) handleSetValueForm(patientSchema.parse(patientData))
+    if (!isLoadingPatient && patientData)
+      handleSetValueForm(patientSchema.parse(patientData))
   }, [isLoadingPatient])
 
   function handleSetValueForm(patientData: PatientData) {
@@ -57,7 +61,7 @@ export function PatientCard({
       age: patientData.age,
       name: patientData.name,
       email: patientData.email,
-      patientId: patientData?.id,
+      patientId: patientData.id,
     })
   }
 
@@ -66,26 +70,28 @@ export function PatientCard({
   }
 
   async function handleUpdatePatient(patientDataForm: UpdatePatientFormData) {
-    console.log(patientDataForm)
-
     await updatePatient(patientDataForm)
   }
 
   async function handleToggleActivePatient() {
     await updatePatientActive(String(patientData?.id), !patientData?.active)
-    window.location.reload()
+    if (patientData)
+      setPatientData({
+        ...patientData,
+        active: !patientData?.active,
+      })
   }
 
   return (
     <>
       {isLoadingPatient ? (
         <div className="w-96 flex flex-col gap-6 mt-8">
-          <Skeleton className="w-[20%] h-[25px]" />
-          <Skeleton className="w-[100%] h-[25px]" />
-          <Skeleton className="w-[20%] h-[25px]" />
-          <Skeleton className="w-[100%] h-[25px]" />
-          <Skeleton className="w-[20%] h-[25px]" />
-          <Skeleton className="w-[100%] h-[25px]" />
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index}>
+              <Skeleton className="w-[20%] h-[25px]" />
+              <Skeleton className="w-[100%] h-[25px]" />
+            </div>
+          ))}
           <div className="flex gap-6">
             <Skeleton className="w-[100%] h-[30px]" />
             <Skeleton className="w-[100%] h-[30px]" />
