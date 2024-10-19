@@ -3,7 +3,6 @@ import {
   SignUpUserFormData,
   SignInUserFormData,
   UserData,
-  GetFirebaseUserData,
   UpdateUserFormData,
 } from '@/utils/types'
 import {
@@ -44,7 +43,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   })
 
   async function signUp(userData: SignUpUserFormData): Promise<void> {
-    const { user }: GetFirebaseUserData = await createUserWithEmailAndPassword(
+    const userCredential = await createUserWithEmailAndPassword(
       auth,
       userData.email,
       userData.password,
@@ -52,11 +51,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       throw new Error(error.message)
     })
 
+    const user = userCredential.user
+
     await setDoc(doc(db, 'users', String(user.uid)), {
       id: user.uid,
-      name: user.displayName,
-      photoURL: user.photoURL,
-      email: user.email,
+      name: user.displayName || '',
+      photoURL: user.photoURL || '',
+      email: user.email || '',
     }).catch((error) => {
       throw new Error(error.message)
     })
@@ -65,6 +66,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function signIn(userData: SignInUserFormData): Promise<void> {
     await signInWithEmailAndPassword(auth, userData.email, userData.password)
       .then(async (userCredential) => {
+        console.log(userCredential)
         const docRef = doc(db, 'users', userCredential.user.uid)
         const userFirestore = await getDoc(docRef)
         const userData = userSchema.parse(userFirestore.data())
@@ -73,6 +75,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         localStorage.setItem('@ClinicSystem:user', JSON.stringify(userData))
       })
       .catch((error) => {
+        console.log(error)
+
         throw new Error(error.message)
       })
   }

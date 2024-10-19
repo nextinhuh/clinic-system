@@ -47,19 +47,19 @@ export const patientTableDefs: TableDefsProps[] = [
 
 export const consultTableDefs: TableDefsProps[] = [
   {
-    tableRowKey: 'name',
+    tableRowKey: 'patientName',
     tableColumnName: 'Nome',
     tableColumnType: 'text',
   },
   {
-    tableRowKey: 'age',
-    tableColumnName: 'Idade',
-    tableColumnType: 'text',
+    tableRowKey: 'date',
+    tableColumnName: 'Data da consulta',
+    tableColumnType: 'date',
   },
   {
-    tableRowKey: 'active',
-    tableColumnName: 'Habilitado',
-    tableColumnType: 'active',
+    tableRowKey: 'status',
+    tableColumnName: 'Status da consulta',
+    tableColumnType: 'text',
   },
   {
     tableRowKey: 'anamnesisId',

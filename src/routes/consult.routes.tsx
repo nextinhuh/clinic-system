@@ -1,6 +1,6 @@
 import { Consult } from '@/pages/consult'
 import { CreateConsult } from '@/pages/consult/create'
-import { DetailPatient } from '@/pages/patient/detail'
+import { ConsultDetail } from '@/pages/consult/detail'
 
 export const ConsultRoutes = [
   {
@@ -13,6 +13,6 @@ export const ConsultRoutes = [
   },
   {
     path: '/consult/detail/:consultId',
-    element: <DetailPatient />,
+    element: <ConsultDetail />,
   },
 ]

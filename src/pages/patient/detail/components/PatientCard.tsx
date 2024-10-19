@@ -1,7 +1,8 @@
-import { FormController, InputListProps } from '@/components/form-controller'
+import { FormController } from '@/components/form-controller'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { updatePatient, updatePatientActive } from '@/service/patient.service'
+import { patientCardInputList } from '@/utils/inputs-def'
 import { patientSchema, updatePatientFormSchema } from '@/utils/schemas'
 import { PatientData, UpdatePatientFormData } from '@/utils/types'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -30,26 +31,6 @@ export function PatientCard({
       patientId: patientData?.id,
     },
   })
-  const inputList: InputListProps[] = [
-    {
-      name: 'name',
-      label: 'Nome',
-      type: 'text',
-      placeholder: 'Digite o nome do paciente',
-    },
-    {
-      name: 'email',
-      label: 'E-mail',
-      placeholder: 'Digite o e-mail do paciente',
-      type: 'email',
-    },
-    {
-      name: 'age',
-      label: 'Idade',
-      placeholder: 'Digite a idade do paciente',
-      type: 'number',
-    },
-  ]
 
   useMemo(() => {
     if (!isLoadingPatient && patientData)
@@ -101,7 +82,7 @@ export function PatientCard({
         <div className="w-full">
           <FormController
             form={form}
-            inputList={inputList}
+            inputList={patientCardInputList}
             className="w-full flex gap-3 mt-8"
             onSubmit={form.handleSubmit(handleUpdatePatient)}
           />

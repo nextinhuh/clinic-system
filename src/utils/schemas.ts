@@ -3,8 +3,8 @@ import { z } from 'zod'
 export const userSchema = z.object({
   id: z.string(),
   email: z.string(),
-  name: z.string(),
-  photoURL: z.string(),
+  name: z.string().nullable(),
+  photoURL: z.string().nullable(),
 })
 
 export const signUpUserFormSchema = z
@@ -195,20 +195,27 @@ export const createScheduleAppointmentFormSchema = z.object({
   }),
 })
 
-enum ConsultStatus {
-  Remarcado = 1,
-  Encaminhado = 2,
-  Impedimento = 3,
-  'Em progresso' = 4,
-}
+// CONSULT
 
-export const consultStatusEnum = z.nativeEnum(ConsultStatus)
-/*export const consultStatusEnum = z.nativeEnum([
+export const consultStatusEnum = z.enum([
   'Remarcado',
   'Encaminhado',
   'Impedimento',
   'Em progresso',
-])*/
+])
+
+export const consultSchema = z.object({
+  id: z.string(),
+  date: z.date(),
+  resume: z.string(),
+  prescription: z.string(),
+  assessment: z.string(),
+  guidance: z.string(),
+  status: consultStatusEnum,
+  doctorId: z.string(),
+  patientId: z.string(),
+  patientName: z.string(),
+})
 
 export const createConsultFormSchema = z.object({
   date: z.date({ required_error: 'A data da consulta é obrigatória' }),
@@ -216,12 +223,12 @@ export const createConsultFormSchema = z.object({
   prescription: z.string({ required_error: 'Prescrição é obrigatória' }),
   assessment: z.string({ required_error: 'Avaliação do caso é obrigatória' }),
   guidance: z.string({ required_error: 'Orientações é obrigatório' }),
-  status: z.string().transform(Number).refine(value =>{
-    console.log(value);
-    Object.values(consultStatusEnum).includes(value), {
-      message: 'Invalid enum value',
-    }
-  }),
+  status: z.string().refine((value: any) => {
+    return consultStatusEnum.options.includes(value)
+  }, 'Status da consulta é obrigatório'),
   doctorId: z.string(),
-  patientId: z.string(),
+  patientName: z.string(),
+  patientId: z.string().refine((value: any) => {
+    return value !== ''
+  }, 'Paciente é obrigatório'),
 })

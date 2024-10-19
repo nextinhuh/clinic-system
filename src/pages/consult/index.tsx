@@ -1,11 +1,27 @@
 import { TableSimple } from '@/components/table-simple'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/hook/Auth'
+import { allConsults } from '@/service/consult.service'
 import { consultTableDefs } from '@/utils/columns-def'
 import { getActualDate } from '@/utils/parse'
+import { ConsultData } from '@/utils/types'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export function Consult() {
+  const { user } = useAuth()
   const navigate = useNavigate()
+  const [loadingList, setLoadingList] = useState<boolean>(false)
+  const [consultList, setConsultList] = useState<ConsultData[]>([])
+
+  useMemo(async () => {
+    setLoadingList(true)
+    const test = await allConsults(user.id)
+    console.log(test)
+
+    setConsultList(test)
+    setLoadingList(false)
+  }, [])
 
   function handleCreateConsult() {
     navigate('/consult/create')
@@ -27,10 +43,10 @@ export function Consult() {
           </Button>
         </div>
 
-        <TableSimple<any>
-          listData={[]}
+        <TableSimple<ConsultData>
+          listData={consultList}
           tableDefs={consultTableDefs}
-          isFetiching={false}
+          isFetiching={loadingList}
         />
       </div>
     </div>
