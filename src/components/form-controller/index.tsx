@@ -86,7 +86,7 @@ function renderInput(
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>
           </FormControl>
-          <SelectContent>
+          <SelectContent {...field}>
             {options !== undefined &&
               options?.map((option) => (
                 <SelectItem

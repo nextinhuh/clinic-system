@@ -10,18 +10,26 @@ import {
   query,
   where,
 } from 'firebase/firestore'
+import { updateSchedule } from './schedule.service'
 
 const CONSULT_FIRESTORE_KEY = 'consults'
 
-export async function createConsult(consultData: CreateConsultFormData) {
+export async function createConsult(
+  consultData: CreateConsultFormData,
+  scheduleId?: string,
+) {
   const db = getFirestore()
 
   await addDoc(collection(db, CONSULT_FIRESTORE_KEY), {
     ...consultData,
     date: consultData.date.toISOString(),
-  }).catch((error) => {
-    throw new Error(error.message)
   })
+    .then(async (consultSaved) => {
+      scheduleId && (await updateSchedule(scheduleId, consultSaved.id))
+    })
+    .catch((error) => {
+      throw new Error(error.message)
+    })
 }
 
 export async function allConsults(doctorId: string): Promise<ConsultData[]> {
@@ -50,7 +58,7 @@ export async function allConsults(doctorId: string): Promise<ConsultData[]> {
     })
     consultList.push(consult)
   })
-  console.log(consultList)
+
   return consultList
 }
 

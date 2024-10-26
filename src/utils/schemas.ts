@@ -175,6 +175,7 @@ export const scheduleAppointmentSchema = z.object({
   id: z.string(),
   date: z.date(),
   patientName: z.string(),
+  doctorName: z.string(),
   doctorId: z.string(),
   patientId: z.string(),
   consultId: z.string(),
@@ -189,10 +190,13 @@ export const createScheduleAppointmentFormSchema = z.object({
       message: 'Selecione um paciente',
     }),
   patientName: z.string(),
+  doctorName: z.string(),
   doctorId: z.string(),
-  date: z.coerce.date().refine((data) => data >= new Date(), {
-    message: 'A data da consulta deve ser maior que a atual',
-  }),
+  date: z.coerce
+    .date()
+    .refine((data) => data.getDate() >= new Date().getDate(), {
+      message: 'A data da consulta deve ser igual ou maio que a atual',
+    }),
 })
 
 // CONSULT

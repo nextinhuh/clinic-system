@@ -6,9 +6,11 @@ import {
 import {
   addDoc,
   collection,
+  doc,
   getDocs,
   getFirestore,
   query,
+  updateDoc,
   where,
 } from 'firebase/firestore'
 
@@ -27,7 +29,7 @@ export async function createSchedule(
   })
 }
 
-export async function getSchedules(
+export async function allSchedules(
   doctorId: string,
 ): Promise<ScheduleAppointmentSchemaData[]> {
   const scheduleList: ScheduleAppointmentSchemaData[] = []
@@ -46,6 +48,7 @@ export async function getSchedules(
       patientId: doc.data().patientId,
       date: new Date(doc.data().date),
       patientName: doc.data().patientName,
+      doctorName: doc.data().doctorName,
       doctorId: doc.data().doctorId,
       hasConfirm: doc.data().hasConfirm,
       consultId: doc.data().consultId ? doc.data().consultId : '',
@@ -53,4 +56,14 @@ export async function getSchedules(
     scheduleList.push(schedule)
   })
   return scheduleList
+}
+
+export async function updateSchedule(scheduleId: string, consultId: string) {
+  const db = getFirestore()
+
+  await updateDoc(doc(db, SCHEDULES_FIRESTORE_KEY, scheduleId), {
+    consultId,
+  }).catch((error) => {
+    throw new Error(error.message)
+  })
 }

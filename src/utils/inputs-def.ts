@@ -2,6 +2,28 @@ import { InputListProps } from '@/components/form-controller'
 import { PatientData } from './types'
 import { consultStatusEnum } from './schemas'
 
+export const confirmScheduleInputList: InputListProps[] = [
+  {
+    name: 'date',
+    label: 'Data',
+    placeholder: 'Selecione uma data',
+    type: 'calendar',
+    disabled: true,
+  },
+  {
+    name: 'patientName',
+    label: 'Paciente',
+    disabled: true,
+    type: 'text',
+  },
+  {
+    name: 'doctorName',
+    label: 'Nome do médico',
+    disabled: true,
+    type: 'text',
+  },
+]
+
 export const consultCardInputList: InputListProps[] = [
   {
     name: 'date',

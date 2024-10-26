@@ -13,7 +13,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FormController } from '@/components/form-controller'
 import { scheduleAppointmentSchema } from '@/utils/schemas'
 import { ScheduleAppointmentSchemaData } from '@/utils/types'
-import { isPast } from 'date-fns'
+import { confirmScheduleInputList } from '@/utils/inputs-def'
+import { useNavigate } from 'react-router-dom'
 
 interface DetailScheduleDialogProps {
   isOpen?: boolean
@@ -24,13 +25,13 @@ export interface DetailScheduleDialogRef {
   handleCloseDialog: () => void
 }
 
-// eslint-disable-next-line react/display-name
 export const DetailScheduleDialog = forwardRef<
   DetailScheduleDialogRef,
   DetailScheduleDialogProps
 >(({ isOpen = false }: DetailScheduleDialogProps, ref) => {
-  const { toast } = useToast()
   const { user } = useAuth()
+  const { toast } = useToast()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(isOpen)
   const [schedule, setSchedule] = useState<ScheduleAppointmentSchemaData>(
     {} as ScheduleAppointmentSchemaData,
@@ -41,34 +42,16 @@ export const DetailScheduleDialog = forwardRef<
       date: new Date(),
       patientId: '',
       patientName: ' schedule?.patientName',
-      doctorId: '',
+      doctorName: '',
     },
   })
-  const inputList = [
-    {
-      name: 'date',
-      label: 'Data',
-      placeholder: 'Selecione uma data',
-      type: 'calendar',
-      disabled: true,
-    },
-    {
-      name: 'patientName',
-      label: 'Paciente',
-      disabled: true,
-    },
-    {
-      name: 'doctorId',
-      label: 'Nome do médico',
-      disabled: true,
-    },
-  ]
+
   useMemo(async () => {
     if (schedule !== undefined) {
       form.reset({
         date: schedule?.date,
         patientName: schedule?.patientName,
-        doctorId: user.name,
+        doctorName: String(user.name),
       })
     }
   }, [schedule])
@@ -85,6 +68,7 @@ export const DetailScheduleDialog = forwardRef<
 
   async function handleConfirmSchedule() {
     try {
+      navigate(`/consult/create`, { state: { schedule } })
       toast({
         variant: 'success',
         title: 'Agendamento confirmado com sucesso!',
@@ -94,14 +78,14 @@ export const DetailScheduleDialog = forwardRef<
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Não foi possivel confirmar 0 agendamento',
+        title: 'Não foi possivel confirmar o agendamento',
         duration: 3000, // 3 SECONDS
       })
     }
   }
 
   function handleCheckScheduleDate(): boolean {
-    return isPast(schedule.date)
+    return schedule?.date?.getDate() > Date.now() || schedule.consultId !== ''
   }
 
   return (
@@ -113,17 +97,18 @@ export const DetailScheduleDialog = forwardRef<
 
         <FormController
           form={form}
-          inputList={inputList}
+          inputList={confirmScheduleInputList}
           className="flex flex-col gap-5 mt-8 items-center w-full"
-          onSubmit={form.handleSubmit(handleConfirmSchedule)}
+          onSubmit={form.handleSubmit(() => {})}
         >
           <div className="flex gap-6 mt-6 w-[100%]">
             <Button
               className="w-[100%]"
               variant="default"
-              type="submit"
+              type="button"
               isLoading={form.formState.isSubmitting}
               disabled={handleCheckScheduleDate()}
+              onClick={handleConfirmSchedule}
             >
               Gerar consulta
             </Button>
@@ -133,3 +118,4 @@ export const DetailScheduleDialog = forwardRef<
     </Dialog>
   )
 })
+DetailScheduleDialog.displayName = 'DetailScheduleDialog'

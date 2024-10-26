@@ -16,10 +16,7 @@ export function Consult() {
 
   useMemo(async () => {
     setLoadingList(true)
-    const test = await allConsults(user.id)
-    console.log(test)
-
-    setConsultList(test)
+    setConsultList(await allConsults(user.id))
     setLoadingList(false)
   }, [])
 

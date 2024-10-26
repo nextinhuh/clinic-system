@@ -14,7 +14,7 @@ import { Skeleton } from '../ui/skeleton'
 import { useNavigate } from 'react-router-dom'
 import { ListX } from 'lucide-react'
 import { ptBR } from 'date-fns/locale'
-import { format, isPast } from 'date-fns'
+import { format, isBefore, subDays } from 'date-fns'
 
 export interface TableDefsProps {
   tableRowKey: string
@@ -52,7 +52,7 @@ export function TableSimple<T>({
   ): 'success' | 'destructive' | 'warning' {
     if (consultId) {
       return 'success'
-    } else if (isPast(date)) {
+    } else if (isBefore(date, subDays(new Date(), 1))) {
       return 'destructive'
     } else {
       return 'warning'

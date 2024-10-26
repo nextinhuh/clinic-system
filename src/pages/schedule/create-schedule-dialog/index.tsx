@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useMemo, useState } from 'react'
+import { forwardRef, useImperativeHandle, useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,6 @@ import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { allPatient } from '@/service/patient.service'
 import { createSchedule } from '@/service/schedule.service'
 import { FormController } from '@/components/form-controller'
 import { createScheduleAppointmentFormSchema } from '@/utils/schemas'
@@ -18,7 +17,8 @@ import { CreateScheduleAppointmentFormSchema, PatientData } from '@/utils/types'
 import { handleMountCreateScheduleInputDefList } from '@/utils/inputs-def'
 
 interface CreateScheduleDialogProps {
-  isOpen?: boolean
+  patientsList: PatientData[]
+  updateSchedulesList: () => Promise<void>
 }
 
 export interface CreateScheduleDialogRef {
@@ -29,26 +29,20 @@ export interface CreateScheduleDialogRef {
 export const CreateScheduleDialog = forwardRef<
   CreateScheduleDialogRef,
   CreateScheduleDialogProps
->(({ isOpen = false }: CreateScheduleDialogProps, ref) => {
-  const { toast } = useToast()
+>(({ patientsList, updateSchedulesList }: CreateScheduleDialogProps, ref) => {
   const { user } = useAuth()
-  const [open, setOpen] = useState(isOpen)
-  const [allPatients, setAllPatients] = useState<PatientData[]>([])
+  const { toast } = useToast()
+  const [open, setOpen] = useState(false)
   const form = useForm<CreateScheduleAppointmentFormSchema>({
     resolver: zodResolver(createScheduleAppointmentFormSchema),
     defaultValues: {
       date: new Date(),
       patientId: '',
       patientName: '',
-      doctorId: '',
+      doctorId: String(user.id),
+      doctorName: String(user.name),
     },
   })
-
-  useMemo(async () => {
-    try {
-      setAllPatients(await allPatient(user?.id))
-    } catch (error) {}
-  }, [])
 
   useImperativeHandle(ref, () => ({
     handleOpenDialog(): void {
@@ -62,7 +56,7 @@ export const CreateScheduleDialog = forwardRef<
   async function handleCreateSchedule(
     scheduleData: CreateScheduleAppointmentFormSchema,
   ) {
-    const patientData = allPatients?.find(
+    const patientData = patientsList?.find(
       (patient) => patient.id === scheduleData.patientId,
     )
 
@@ -74,19 +68,17 @@ export const CreateScheduleDialog = forwardRef<
       })
     }
 
-    scheduleData = {
-      ...scheduleData,
-      doctorId: user?.id || '',
-      patientName: patientData?.name || '',
-    }
-
     try {
-      await createSchedule(scheduleData)
+      await createSchedule({
+        ...scheduleData,
+        patientName: patientData?.name || '',
+      })
       toast({
         variant: 'success',
         title: 'Agendamento realizado com sucesso!',
         duration: 3000, // 3 SECONDS
       })
+      await updateSchedulesList()
       setOpen(!open)
     } catch (error) {
       toast({
@@ -106,7 +98,7 @@ export const CreateScheduleDialog = forwardRef<
 
         <FormController
           form={form}
-          inputList={handleMountCreateScheduleInputDefList(allPatients)}
+          inputList={handleMountCreateScheduleInputDefList(patientsList)}
           className="flex flex-col gap-5 mt-8 items-center w-full"
           onSubmit={form.handleSubmit(handleCreateSchedule)}
         >

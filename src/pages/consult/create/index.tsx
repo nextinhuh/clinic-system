@@ -10,18 +10,21 @@ import { CreateConsultFormData, PatientData } from '@/utils/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 export function CreateConsult() {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const { state: scheduleData } = useLocation()
   const [patientList, setPatientList] = useState<PatientData[]>([])
   const form = useForm<CreateConsultFormData>({
     resolver: zodResolver(createConsultFormSchema),
     defaultValues: {
       doctorId: user.id,
       patientName: '',
-      patientId: '',
+      patientId: scheduleData?.schedule?.patientId
+        ? scheduleData?.schedule?.patientId
+        : '',
       assessment: '',
       date: new Date(),
       guidance: '',
@@ -42,10 +45,13 @@ export function CreateConsult() {
       const findPatient = patientList.find(
         (patient) => patient.id === consultData.patientId,
       )
-      await createConsult({
-        ...consultData,
-        patientName: String(findPatient?.name),
-      })
+      await createConsult(
+        {
+          ...consultData,
+          patientName: String(findPatient?.name),
+        },
+        scheduleData?.schedule?.id,
+      )
       toast({
         variant: 'success',
         title: 'Consulta criada com sucesso!',
@@ -85,7 +91,7 @@ export function CreateConsult() {
             className="w-56"
             variant="outline"
             type="button"
-            onClick={() => {}}
+            onClick={handleGoBack}
           >
             Voltar
           </Button>
